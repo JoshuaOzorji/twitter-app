@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import User from "../models/user.model";
 import Notification from "../models/notification.model";
 import bcrypt from "bcryptjs";
+import { v2 as cloudinary } from "cloudinary";
+
 export const getUserProfile = async (req: Request, res: Response) => {
 	const { username } = req.params;
 
@@ -99,11 +101,21 @@ export const updateUser = async (req: Request, res: Response) => {
 	const { fullName, email, username, currentPassword, newPassword, bio, link } =
 		req.body;
 
+	let { profileImg, coverImg } = req.body;
+
 	const userId = req.user._id;
 
 	try {
 		let user = await User.findById(userId);
 		if (!user) return res.status(404).json({ message: "User not found" });
+
+		// Check if the updated username already exists
+		if (username && username !== user.username) {
+			const existingUser = await User.findOne({ username });
+			if (existingUser) {
+				return res.status(400).json({ error: "Username already exists" });
+			}
+		}
 
 		if (
 			(!newPassword && currentPassword) ||
@@ -129,6 +141,42 @@ export const updateUser = async (req: Request, res: Response) => {
 			const salt = await bcrypt.genSalt(10);
 			user.password = await bcrypt.hash(newPassword, salt);
 		}
+
+		if (profileImg) {
+			if (user.profileImg) {
+				await cloudinary.uploader.destroy(
+					user.profileImg.split("/").pop()?.split(".")[0] || "",
+				);
+			}
+
+			const uploadedResponse = await cloudinary.uploader.upload(profileImg);
+			profileImg = uploadedResponse.secure_url;
+		}
+
+		if (coverImg) {
+			if (user.coverImg) {
+				await cloudinary.uploader.destroy(
+					user.coverImg.split("/").pop()?.split(".")[0] || "",
+				);
+			}
+			const uploadedResponse = await cloudinary.uploader.upload(coverImg);
+			coverImg = uploadedResponse.secure_url;
+		}
+
+		user.fullName = fullName || user.fullName;
+		user.email = email || user.email;
+		user.username = username || user.username;
+		user.bio = bio || user.bio;
+		user.link = link || user.link;
+		user.profileImg = profileImg || user.profileImg;
+		user.coverImg = coverImg || user.coverImg;
+
+		user = await user.save();
+
+		// Ensure user.password is a string or null
+		(user as any).password = null;
+
+		return res.status(200).json(user);
 	} catch (error) {
 		console.log("Error in updateUser:", (error as Error).message);
 		res.status(500).json({ error: (error as Error).message });
