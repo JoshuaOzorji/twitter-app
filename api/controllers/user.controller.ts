@@ -3,6 +3,7 @@ import User from "../models/user.model";
 import Notification from "../models/notification.model";
 import bcrypt from "bcryptjs";
 import { v2 as cloudinary } from "cloudinary";
+import handleServerError from "../utils/errorHandler";
 
 export const getUserProfile = async (req: Request, res: Response) => {
 	const { username } = req.params;
@@ -13,9 +14,8 @@ export const getUserProfile = async (req: Request, res: Response) => {
 		if (!user) return res.status(404).json({ message: "User not found" });
 
 		res.status(200).json(user);
-	} catch (error) {
-		console.log("Error in getUserProfile:", (error as Error).message);
-		res.status(500).json({ error: (error as Error).message });
+	} catch (error: any) {
+		handleServerError(res, error, "getUserProfile");
 	}
 };
 
@@ -62,9 +62,8 @@ export const followUnfollowUser = async (req: Request, res: Response) => {
 
 			res.status(200).json({ message: "User followed successfully" });
 		}
-	} catch (error) {
-		console.log("Error in followUnfollowUser:", (error as Error).message);
-		res.status(500).json({ error: (error as Error).message });
+	} catch (error: any) {
+		handleServerError(res, error, "followUnfollowUser");
 	}
 };
 
@@ -91,9 +90,8 @@ export const getSuggestedUsers = async (req: Request, res: Response) => {
 		suggestedUsers.forEach((user) => (user.password = null));
 
 		res.status(200).json(suggestedUsers);
-	} catch (error) {
-		console.log("Error in getSuggestedUsers:", (error as Error).message);
-		res.status(500).json({ error: (error as Error).message });
+	} catch (error: any) {
+		handleServerError(res, error, "getSuggestedUsers");
 	}
 };
 
@@ -177,8 +175,7 @@ export const updateUser = async (req: Request, res: Response) => {
 		(user as any).password = null;
 
 		return res.status(200).json(user);
-	} catch (error) {
-		console.log("Error in updateUser:", (error as Error).message);
-		res.status(500).json({ error: (error as Error).message });
+	} catch (error: any) {
+		handleServerError(res, error, "updateUser");
 	}
 };

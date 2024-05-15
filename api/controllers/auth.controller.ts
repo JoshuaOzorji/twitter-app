@@ -2,7 +2,8 @@ import { Request, Response } from "express";
 import User from "../models/user.model";
 import bcrypt from "bcryptjs";
 import { generateTokenAndSetCookie } from "../utils/generateToken";
-import { error } from "console";
+
+import handleServerError from "../utils/errorHandler";
 
 export const signup = async (req: Request, res: Response) => {
 	try {
@@ -57,9 +58,8 @@ export const signup = async (req: Request, res: Response) => {
 		} else {
 			res.status(400).json({ error: "Invalid user data" });
 		}
-	} catch (error) {
-		console.log("Error in signup controller", (error as Error).message);
-		res.status(500).json({ error: "Internal Server Error" });
+	} catch (error: any) {
+		handleServerError(res, error, "signup");
 	}
 };
 
@@ -88,9 +88,8 @@ export const login = async (req: Request, res: Response) => {
 			profileImg: user.profileImg,
 			coverImg: user.coverImg,
 		});
-	} catch (error) {
-		console.log("Error in login controller", (error as Error).message);
-		res.status(500).json({ error: "Internal Server Error" });
+	} catch (error: any) {
+		handleServerError(res, error, "login");
 	}
 };
 
@@ -98,9 +97,8 @@ export const logout = async (req: Request, res: Response) => {
 	try {
 		res.cookie("jwt", "", { maxAge: 0 });
 		res.status(200).json({ message: "Logged out successfully" });
-	} catch (error) {
-		console.log("Error in login controller", (error as Error).message);
-		res.status(500).json({ error: "Internal Server Error" });
+	} catch (error: any) {
+		handleServerError(res, error, "logout");
 	}
 };
 
@@ -108,8 +106,7 @@ export const getMe = async (req: Request, res: Response) => {
 	try {
 		const user = await User.findById(req.user._id).select("-password");
 		res.status(200).json(user);
-	} catch (error) {
-		console.log("Error in login controller", (error as Error).message);
-		res.status(500).json({ error: "Internal Server Error" });
+	} catch (error: any) {
+		handleServerError(res, error, "getMe");
 	}
 };
