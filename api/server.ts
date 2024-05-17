@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import authRoutes from "./routes/auth.route";
 import userRoutes from "./routes/user.route";
 import postRoutes from "./routes/post.route";
+import notificationsRoutes from "./routes/notification.route";
 
 import { v2 as cloudinary } from "cloudinary";
 
@@ -29,6 +30,7 @@ app.use(cookieParser());
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/posts", postRoutes);
+app.use("/api/notifications", notificationsRoutes);
 
 app.listen(PORT, () => {
 	console.log(`Server is running on port ${PORT}`);
