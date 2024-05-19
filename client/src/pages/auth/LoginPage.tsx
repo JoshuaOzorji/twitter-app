@@ -22,15 +22,6 @@ const LoginPage = () => {
 		setFormData({ ...formData, [name]: value });
 	};
 
-	// const handleSubmit = (e) => {
-	// 	e.preventDefault();
-	// 	console.log(formData);
-	// };
-
-	// const handleInputChange = (e) => {
-	// 	setFormData({ ...formData, [e.target.name]: e.target.value });
-	// };
-
 	const isError = false;
 
 	return (
