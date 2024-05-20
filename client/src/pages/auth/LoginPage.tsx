@@ -1,15 +1,24 @@
 import { ChangeEvent, FormEvent, useState } from "react";
 import { Link } from "react-router-dom";
-
-import XSvg from "../../components/svgs/X";
-
 import { MdOutlineMail } from "react-icons/md";
 import { MdPassword } from "react-icons/md";
+import XSvg from "../../components/svgs/X";
+import { useMutation } from "@tanstack/react-query";
 
 const LoginPage = () => {
 	const [formData, setFormData] = useState({
 		username: "",
 		password: "",
+	});
+
+	const { mutate, isPending, isError, error } = useMutation({
+		mutationFn: async ({ username, password }) => {
+			try {
+				const res = await fetch();
+			} catch (error) {
+				throw new Error(error);
+			}
+		},
 	});
 
 	const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -21,8 +30,6 @@ const LoginPage = () => {
 		const { name, value } = e.target;
 		setFormData({ ...formData, [name]: value });
 	};
-
-	const isError = false;
 
 	return (
 		<div className='max-w-screen-xl mx-auto flex h-screen'>

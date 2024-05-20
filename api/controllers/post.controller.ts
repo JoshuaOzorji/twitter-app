@@ -50,18 +50,11 @@ export const deletePost = async (req: Request, res: Response) => {
 				.json({ error: "You are not authorized to delete this post" });
 		}
 
-		//   if (post.img) {
-		//     const imgId = post.img.split("/").pop()?.split(".")[0];
-		//     if (imgId) {
-		//         await cloudinary.uploader.destroy(imgId);
-		//     } else {
-		//         console.error("Image ID not found");
-		//     }
-		// }
-
 		const imgId = post.img && post.img.split("/").pop()?.split(".")[0];
 		if (imgId) {
 			await cloudinary.uploader.destroy(imgId);
+		} else {
+			console.log("Image ID not found");
 		}
 
 		await Post.findByIdAndDelete(req.params.id);
