@@ -30,10 +30,3 @@ export interface PostType {
 	}[];
 	likes: string[];
 }
-
-export interface SignUpData {
-	email: string;
-	username: string;
-	fullName: string;
-	password: string;
-}

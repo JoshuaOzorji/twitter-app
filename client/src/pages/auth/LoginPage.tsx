@@ -3,27 +3,19 @@ import { Link } from "react-router-dom";
 import { MdOutlineMail } from "react-icons/md";
 import { MdPassword } from "react-icons/md";
 import XSvg from "../../components/svgs/X";
-import { useMutation } from "@tanstack/react-query";
+import { useLogin } from "../../api-client/AuthApi";
 
 const LoginPage = () => {
+	const { loginMutation, isPending, isError, error } = useLogin();
+
 	const [formData, setFormData] = useState({
 		username: "",
 		password: "",
 	});
 
-	const { mutate, isPending, isError, error } = useMutation({
-		mutationFn: async ({ username, password }) => {
-			try {
-				const res = await fetch();
-			} catch (error) {
-				throw new Error(error);
-			}
-		},
-	});
-
 	const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		console.log(formData);
+		loginMutation(formData);
 	};
 
 	const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -64,9 +56,9 @@ const LoginPage = () => {
 						/>
 					</label>
 					<button className='btn rounded-full btn-primary text-white'>
-						Login
+						{isPending ? "Loading..." : "Login"}
 					</button>
-					{isError && <p className='text-red-500'>Something went wrong</p>}
+					{isError && error && <p className='text-red-500'>{error.message}</p>}
 				</form>
 				<div className='flex flex-col gap-2 mt-4'>
 					<p className='text-white text-lg'>{"Don't"} have an account?</p>
