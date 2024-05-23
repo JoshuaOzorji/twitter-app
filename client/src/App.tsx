@@ -22,9 +22,6 @@ const App = () => {
 				});
 				const data = await response.json();
 
-				console.log("Fetch response:", response);
-				console.log("Fetch data:", data);
-
 				if (data.error) return null;
 				if (!response.ok) {
 					throw new Error(data.error || "Something went wrong");

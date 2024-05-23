@@ -5,18 +5,26 @@ import { FaRegBookmark } from "react-icons/fa6";
 import { FaTrash } from "react-icons/fa";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { PostType } from "../../types";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { PostType, User } from "../../types";
 
 interface PostProps {
 	post: PostType;
 }
 
 const Post = ({ post }: PostProps) => {
+	const queryClient = useQueryClient();
+
+	const { data: authUser } = useQuery<User>({ queryKey: ["authUser"] });
+
 	const [comment, setComment] = useState("");
+
 	const postOwner = post.user;
+
 	const isLiked = false;
 
-	const isMyPost = true;
+	// const isMyPost = authUser && authUser._id === post.user._id;
+	const isMyPost = authUser && authUser._id.equals(postOwner._id);
 
 	const formattedDate = "1h";
 
