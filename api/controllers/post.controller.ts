@@ -207,3 +207,22 @@ export const getUserPosts = async (req: Request, res: Response) => {
 		handleServerError(res, error, "getUserPosts");
 	}
 };
+
+export const getUserById = async (req: Request, res: Response) => {
+	try {
+		const postId = req.params.id;
+
+		const post = await Post.findById(postId)
+			.populate("user", "username fullName profileImg")
+			.populate("comments.user", "username fullName profileImg")
+			.exec();
+
+		if (!post) {
+			res.status(404).json({ message: "Post not found" });
+		}
+
+		res.status(200).json(post);
+	} catch (error: any) {
+		handleServerError(res, error, "updateUser");
+	}
+};

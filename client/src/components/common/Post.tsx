@@ -5,7 +5,7 @@ import { FaRegBookmark } from "react-icons/fa6";
 import { FaTrash } from "react-icons/fa";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { PostType, User } from "../../types";
 
 interface PostProps {
@@ -13,8 +13,6 @@ interface PostProps {
 }
 
 const Post = ({ post }: PostProps) => {
-	const queryClient = useQueryClient();
-
 	const { data: authUser } = useQuery<User>({ queryKey: ["authUser"] });
 
 	const [comment, setComment] = useState("");
@@ -23,8 +21,7 @@ const Post = ({ post }: PostProps) => {
 
 	const isLiked = false;
 
-	// const isMyPost = authUser && authUser._id === post.user._id;
-	const isMyPost = authUser && authUser._id.equals(postOwner._id);
+	const isMyPost = authUser && authUser._id === post.user._id;
 
 	const formattedDate = "1h";
 
@@ -108,7 +105,9 @@ const Post = ({ post }: PostProps) => {
 											</p>
 										)}
 										{post.comments.map((comment) => (
-											<div key={comment._id} className='flex gap-2 items-start'>
+											<div
+												key={comment._id.toString()}
+												className='flex gap-2 items-start'>
 												<div className='avatar'>
 													<div className='w-8 rounded-full'>
 														<img

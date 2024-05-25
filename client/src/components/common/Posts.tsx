@@ -15,7 +15,7 @@ const Posts = ({ feedType }: Props) => {
 			case "forYou":
 				return `${API_BASE_URL}/api/posts/all`;
 			default:
-				return "/api/posts/all";
+				return `${API_BASE_URL}/api/posts/all`;
 		}
 	};
 
@@ -25,7 +25,10 @@ const Posts = ({ feedType }: Props) => {
 		queryKey: ["posts"],
 		queryFn: async () => {
 			try {
-				const response = await fetch(POST_ENDPOINT);
+				const response = await fetch(POST_ENDPOINT, {
+					headers: { "Content-Type": "application/json" },
+					credentials: "include",
+				});
 				const data = await response.json();
 
 				if (!response.ok) {

@@ -3,19 +3,56 @@ import { BsEmojiSmileFill } from "react-icons/bs";
 import { useRef, useState } from "react";
 import { IoCloseSharp } from "react-icons/io5";
 import { FormEvent, ChangeEvent } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
+import { User } from "../../types";
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+interface CreatePostArgs {
+	text: string;
+	img: string | null;
+}
 
 const CreatePost = () => {
-	const [text, setText] = useState("");
+	const [text, setText] = useState<string>("");
 	const [img, setImg] = useState<string | null>(null);
 
 	const imgRef = useRef<HTMLInputElement>(null);
 
-	const isPending = false;
-	const isError = false;
+	const { data: authUser } = useQuery<User>({ queryKey: ["authUser"] });
 
-	const data = {
-		profileImg: "/avatars/boy1.png",
-	};
+	const queryClient = useQueryClient();
+
+	const {
+		mutate: createPost,
+		isPending,
+		isError,
+		error,
+	} = useMutation({
+		mutationFn: async ({ text, img }: CreatePostArgs) => {
+			try {
+				const response = await fetch(`${API_BASE_URL}/api/posts/create`, {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ text, img }),
+				});
+				const data = await response.json();
+
+				return data;
+			} catch (error) {
+				console.error(error);
+				throw error;
+			}
+		},
+
+		onSuccess: () => {
+			setText("");
+			setImg(null);
+			toast.success("Post created successfully");
+			queryClient.invalidateQueries({ queryKey: ["posts"] });
+		},
+	});
 
 	const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -40,7 +77,7 @@ const CreatePost = () => {
 		<div className='flex p-4 items-start gap-4 border-b border-gray-700'>
 			<div className='avatar'>
 				<div className='w-8 rounded-full'>
-					<img src={data.profileImg || "/avatar-placeholder.png"} />
+					<img src={authUser?.profileImg || "/avatar-placeholder.png"} />
 				</div>
 			</div>
 			<form className='flex flex-col gap-2 w-full' onSubmit={handleSubmit}>
