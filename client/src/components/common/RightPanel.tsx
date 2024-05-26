@@ -1,9 +1,54 @@
 import { Link } from "react-router-dom";
 import RightPanelSkeleton from "../skeletons/RightPanelSkeleton";
-import { USERS_FOR_RIGHT_PANEL } from "../../utils/db/dummy";
+import { useQuery } from "@tanstack/react-query";
+import { useFollow } from "../../hooks/useFollow";
+import LoadingSpinner from "./LoadingSpinner";
+import { useState } from "react";
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+export type UserType = {
+	_id: string;
+	username: string;
+	fullName: string;
+	profileImg?: string;
+};
 
 const RightPanel = () => {
-	const isLoading = false;
+	const { data: suggestedUsers, isLoading } = useQuery<UserType[]>({
+		queryKey: ["suggestedUsers"],
+		queryFn: async () => {
+			try {
+				const response = await fetch(`${API_BASE_URL}/api/users/suggested`, {
+					credentials: "include",
+				});
+				const data = await response.json();
+
+				if (!response.ok) {
+					throw new Error(data.error || "Something went wrong");
+				}
+				return data;
+			} catch (error) {
+				console.error(error);
+				throw error;
+			}
+		},
+	});
+
+	const { follow } = useFollow();
+
+	const [pendingUserId, setPendingUserId] = useState<string | null>(null);
+
+	const handleFollow = (userId: string) => {
+		setPendingUserId(userId);
+		follow(userId, {
+			onSettled: () => {
+				setPendingUserId(null);
+			},
+		});
+	};
+
+	if (suggestedUsers?.length === 0) return <div className='md:w-64 w-0'></div>;
 
 	return (
 		<div className='hidden lg:block my-4 mx-2'>
@@ -20,7 +65,7 @@ const RightPanel = () => {
 						</>
 					)}
 					{!isLoading &&
-						USERS_FOR_RIGHT_PANEL?.map((user) => (
+						suggestedUsers?.map((user) => (
 							<Link
 								to={`/profile/${user.username}`}
 								className='flex items-center justify-between gap-4'
@@ -43,8 +88,15 @@ const RightPanel = () => {
 								<div>
 									<button
 										className='btn bg-white text-black hover:bg-white hover:opacity-90 rounded-full btn-sm'
-										onClick={(e) => e.preventDefault()}>
-										Follow
+										onClick={(e) => {
+											e.preventDefault();
+											handleFollow(user._id);
+										}}>
+										{pendingUserId === user._id ? (
+											<LoadingSpinner size='sm' />
+										) : (
+											"Follow"
+										)}
 									</button>
 								</div>
 							</Link>

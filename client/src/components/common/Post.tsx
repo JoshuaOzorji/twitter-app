@@ -5,21 +5,31 @@ import { FaRegBookmark } from "react-icons/fa6";
 import { FaTrash } from "react-icons/fa";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { PostType, User } from "../../types";
+import LoadingSpinner from "./LoadingSpinner";
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 interface PostProps {
 	post: PostType;
 }
 
+type Post = {
+	_id: string;
+	likes: number;
+};
+
 const Post = ({ post }: PostProps) => {
 	const { data: authUser } = useQuery<User>({ queryKey: ["authUser"] });
+
+	const queryClient = useQueryClient();
 
 	const [comment, setComment] = useState("");
 
 	const postOwner = post.user;
 
-	const isLiked = false;
+	const isLiked = authUser ? post.likes.includes(authUser._id) : false;
 
 	const isMyPost = authUser && authUser._id === post.user._id;
 
@@ -27,13 +37,59 @@ const Post = ({ post }: PostProps) => {
 
 	const isCommenting = false;
 
+	const { mutate: likePost, isPending: isLiking } = useMutation({
+		mutationFn: async () => {
+			try {
+				const response = await fetch(
+					`${API_BASE_URL}/api/posts/like/${post._id}`,
+					{ method: "POST", credentials: "include" },
+				);
+				const data = await response.json();
+
+				if (!response.ok) {
+					throw new Error(data.error || "Something went wrong");
+				}
+				return data;
+			} catch (error) {
+				console.error(error);
+				throw error;
+			}
+		},
+
+		onSuccess: (updatedLikes: number) => {
+			// this is not the best UX, bc it will refetch all posts
+			// queryClient.invalidateQueries({ queryKey: ["posts"] });
+
+			// instead, update the cache directly for that post
+			queryClient.setQueryData<Post[]>(["posts"], (oldData) => {
+				if (!Array.isArray(oldData)) {
+					console.error(
+						"Expected oldData to be an array of posts, but received:",
+						oldData,
+					);
+					return oldData;
+				}
+
+				return oldData.map((p) => {
+					if (p._id === post._id) {
+						return { ...p, likes: updatedLikes };
+					}
+					return p;
+				});
+			});
+		},
+	});
+
 	const handleDeletePost = () => {};
 
 	const handlePostComment = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 	};
 
-	const handleLikePost = () => {};
+	const handleLikePost = () => {
+		if (isLiking) return;
+		likePost();
+	};
 
 	return (
 		<>
@@ -163,6 +219,7 @@ const Post = ({ post }: PostProps) => {
 							<div
 								className='flex gap-1 items-center group cursor-pointer'
 								onClick={handleLikePost}>
+								{isLiking && <LoadingSpinner size='sm' />}
 								{!isLiked && (
 									<FaRegHeart className='w-4 h-4 cursor-pointer text-slate-500 group-hover:text-pink-500' />
 								)}

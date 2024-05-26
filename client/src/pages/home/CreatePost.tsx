@@ -17,11 +17,9 @@ interface CreatePostArgs {
 const CreatePost = () => {
 	const [text, setText] = useState<string>("");
 	const [img, setImg] = useState<string | null>(null);
-
 	const imgRef = useRef<HTMLInputElement>(null);
 
 	const { data: authUser } = useQuery<User>({ queryKey: ["authUser"] });
-
 	const queryClient = useQueryClient();
 
 	const {
@@ -34,10 +32,15 @@ const CreatePost = () => {
 			try {
 				const response = await fetch(`${API_BASE_URL}/api/posts/create`, {
 					method: "POST",
+					credentials: "include",
 					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify({ text, img }),
 				});
 				const data = await response.json();
+
+				if (!response.ok) {
+					throw new Error(data.error || "Something went wrong");
+				}
 
 				return data;
 			} catch (error) {
@@ -56,7 +59,7 @@ const CreatePost = () => {
 
 	const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		alert("Post created successfully");
+		createPost({ text, img });
 	};
 
 	const handleImgChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -128,7 +131,7 @@ const CreatePost = () => {
 						{isPending ? "Posting..." : "Post"}
 					</button>
 				</div>
-				{isError && <div className='text-red-500'>Something went wrong</div>}
+				{isError && <div className='text-red-500'>{error.message}</div>}
 			</form>
 		</div>
 	);

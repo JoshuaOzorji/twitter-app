@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { MdOutlineMail } from "react-icons/md";
 import { MdPassword } from "react-icons/md";
 import XSvg from "../../components/svgs/X";
-import { useLogin } from "../../api-client/AuthApi";
+import { useLogin } from "../../hooks/AuthApi";
 
 const LoginPage = () => {
 	const { loginMutation, isPending, isError, error } = useLogin();

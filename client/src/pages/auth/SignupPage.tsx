@@ -5,7 +5,7 @@ import { MdOutlineMail } from "react-icons/md";
 import { FaUser } from "react-icons/fa";
 import { MdPassword } from "react-icons/md";
 import { MdDriveFileRenameOutline } from "react-icons/md";
-import { useSignUp } from "../../api-client/AuthApi";
+import { useSignUp } from "../../hooks/AuthApi";
 
 const SignUpPage = () => {
 	const { signUp, isError, isPending, error } = useSignUp();
