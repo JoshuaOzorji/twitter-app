@@ -1,5 +1,5 @@
 import { ChangeEvent, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 import Posts from "../../components/common/Posts";
 import ProfileHeaderSkeleton from "../../components/skeletons/ProfileHeaderSkeleton";
@@ -11,6 +11,12 @@ import { FaArrowLeft } from "react-icons/fa6";
 import { IoCalendarOutline } from "react-icons/io5";
 import { FaLink } from "react-icons/fa";
 import { MdEdit } from "react-icons/md";
+import { useQuery } from "@tanstack/react-query";
+import { User } from "../../types";
+import { formatMemberSinceDate } from "../../utils/date";
+import { useFollow } from "../../hooks/useFollow";
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const ProfilePage = () => {
 	const [coverImg, setCoverImg] = useState<string | ArrayBuffer | null>(null);
@@ -24,20 +30,42 @@ const ProfilePage = () => {
 	const coverImgRef = useRef<HTMLInputElement | null>(null);
 	const profileImgRef = useRef<HTMLInputElement | null>(null);
 
-	const isLoading = false;
-	const isMyProfile = true;
+	const { username } = useParams();
 
-	const user = {
-		_id: "1",
-		fullName: "John Doe",
-		username: "johndoe",
-		profileImg: "/avatars/boy2.png",
-		coverImg: "/cover.png",
-		bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-		link: "https://youtube.com/@asaprogrammer_",
-		following: ["1", "2", "3"],
-		followers: ["1", "2", "3"],
-	};
+	// FOLLOW HOOK
+	const { follow, isPending } = useFollow();
+
+	const { data: authUser } = useQuery<User>({ queryKey: ["userProfile"] });
+
+	const { data: user, isLoading } = useQuery({
+		queryKey: ["userProfile"],
+		queryFn: async () => {
+			try {
+				const response = await fetch(
+					`${API_BASE_URL}/api/users/profile/${username}`,
+					{ credentials: "include" },
+				);
+
+				const data = await response.json();
+				if (!response.ok) {
+					throw new Error(data.error || "Something went wrong");
+				}
+				return data;
+			} catch (error) {
+				console.error(error);
+				throw error;
+			}
+		},
+	});
+
+	// PROFILE OWNER
+	const isMyProfile = authUser && authUser._id === user?._id;
+
+	// USER DURATION
+	const memberSinceData = formatMemberSinceDate(user?._id);
+
+	//IF FOLLOWING
+	const amIFollowing = authUser?.following.includes(user?._id);
 
 	const handleImgChange = (
 		e: ChangeEvent<HTMLInputElement>,
@@ -182,7 +210,7 @@ const ProfilePage = () => {
 									<div className='flex gap-2 items-center'>
 										<IoCalendarOutline className='w-4 h-4 text-slate-500' />
 										<span className='text-sm text-slate-500'>
-											Joined July 2021
+											{memberSinceData}
 										</span>
 									</div>
 								</div>

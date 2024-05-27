@@ -4,32 +4,65 @@ import LoadingSpinner from "../../components/common/LoadingSpinner";
 import { IoSettingsOutline } from "react-icons/io5";
 import { FaUser } from "react-icons/fa";
 import { FaHeart } from "react-icons/fa6";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Notification } from "../../types";
+import toast from "react-hot-toast";
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const NotificationPage = () => {
-	const isLoading = false;
-	const notifications = [
-		{
-			_id: "1",
-			from: {
-				_id: "1",
-				username: "johndoe",
-				profileImg: "/avatars/boy2.png",
-			},
-			type: "follow",
-		},
-		{
-			_id: "2",
-			from: {
-				_id: "2",
-				username: "janedoe",
-				profileImg: "/avatars/girl1.png",
-			},
-			type: "like",
-		},
-	];
+	const queryClient = useQueryClient();
 
-	const deleteNotifications = () => {
-		alert("All notifications deleted");
+	const { data: notifications, isLoading } = useQuery<Notification[]>({
+		queryKey: ["notifications"],
+		queryFn: async () => {
+			try {
+				const response = await fetch(`${API_BASE_URL}/api/notifications`, {
+					credentials: "include",
+				});
+				const data = await response.json();
+
+				if (!response.ok) throw new Error(data.error || "Something went wrong");
+
+				return data;
+			} catch (error) {
+				console.error(error);
+				throw error;
+			}
+		},
+	});
+
+	const { mutate: deleteNotifications } = useMutation({
+		mutationFn: async () => {
+			try {
+				const response = await fetch(`${API_BASE_URL}/api/notifications`, {
+					method: "DELETE",
+					credentials: "include",
+				});
+
+				const data = await response.json();
+
+				if (!response.ok) throw new Error(data.error || "Something went wrong");
+				return data;
+			} catch (error) {
+				console.error(error);
+				throw error;
+			}
+		},
+		onSuccess: () => {
+			toast.success("Notifications deleted successfully");
+			queryClient.invalidateQueries({ queryKey: ["notifications"] });
+		},
+		onError: (error) => {
+			toast.error(error.message);
+		},
+	});
+
+	const handleDeleteNotifications = (
+		event: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+	) => {
+		event.preventDefault();
+		deleteNotifications();
 	};
 
 	return (
@@ -45,7 +78,9 @@ const NotificationPage = () => {
 							tabIndex={0}
 							className='dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52'>
 							<li>
-								<a onClick={deleteNotifications}>Delete all notifications</a>
+								<a onClick={handleDeleteNotifications}>
+									Delete all notifications
+								</a>
 							</li>
 						</ul>
 					</div>

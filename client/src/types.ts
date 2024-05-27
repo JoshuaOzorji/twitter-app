@@ -39,3 +39,13 @@ export type User = Document & {
 	createdAt?: Date;
 	updatedAt?: Date;
 };
+
+export type Notification = {
+	_id: string;
+	from: User;
+	to: User;
+	type: "follow" | "like";
+	read: boolean;
+	createdAt: string;
+	updatedAt: string;
+};

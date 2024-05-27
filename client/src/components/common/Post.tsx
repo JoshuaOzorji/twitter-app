@@ -8,6 +8,8 @@ import { Link } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { PostType, User } from "../../types";
 import LoadingSpinner from "./LoadingSpinner";
+import toast from "react-hot-toast";
+import { formatPostDate } from "../../utils/date";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -33,9 +35,9 @@ const Post = ({ post }: PostProps) => {
 
 	const isMyPost = authUser && authUser._id === post.user._id;
 
-	const formattedDate = "1h";
-
-	const isCommenting = false;
+	const formattedDate = post.createdAt
+		? formatPostDate(post.createdAt)
+		: "date unknown";
 
 	const { mutate: likePost, isPending: isLiking } = useMutation({
 		mutationFn: async () => {
@@ -80,10 +82,47 @@ const Post = ({ post }: PostProps) => {
 		},
 	});
 
+	const { mutate: commentPost, isPending: isCommenting } = useMutation({
+		mutationFn: async () => {
+			try {
+				const response = await fetch(
+					`${API_BASE_URL}/api/posts/comment/${post._id}`,
+					{
+						method: "POST",
+						credentials: "include",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify({ text: comment }),
+					},
+				);
+				const data = await response.json();
+
+				if (!response.ok) {
+					throw new Error(data.error || "Something went wrong");
+				}
+				return data;
+			} catch (error) {
+				console.error(error);
+				throw error;
+			}
+		},
+
+		onSuccess: () => {
+			toast.success("Comment sent");
+			setComment("");
+			queryClient.invalidateQueries({ queryKey: ["posts"] });
+		},
+
+		onError: (error) => {
+			toast.error(error.message);
+		},
+	});
+
 	const handleDeletePost = () => {};
 
 	const handlePostComment = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
+		if (isCommenting) return;
+		commentPost();
 	};
 
 	const handleLikePost = () => {
@@ -198,11 +237,7 @@ const Post = ({ post }: PostProps) => {
 											onChange={(e) => setComment(e.target.value)}
 										/>
 										<button className='btn btn-primary rounded-full btn-sm text-white px-4'>
-											{isCommenting ? (
-												<span className='loading loading-spinner loading-md'></span>
-											) : (
-												"Post"
-											)}
+											{isCommenting ? <LoadingSpinner size='md' /> : "Post"}
 										</button>
 									</form>
 								</div>
