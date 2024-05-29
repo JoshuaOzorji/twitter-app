@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
+import { FormData } from "../types";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -8,7 +9,7 @@ export const useUpdateUserProfile = () => {
 
 	const { mutateAsync: updateProfile, isPending: isUpdatingProfile } =
 		useMutation({
-			mutationFn: async (formData) => {
+			mutationFn: async (formData: FormData) => {
 				try {
 					const response = await fetch(`${API_BASE_URL}/api/users/update`, {
 						method: "POST",

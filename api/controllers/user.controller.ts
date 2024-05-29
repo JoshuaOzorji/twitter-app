@@ -108,7 +108,7 @@ export const updateUser = async (req: Request, res: Response) => {
 		if (!user) return res.status(404).json({ message: "User not found" });
 
 		// Check if the updated username already exists
-		if (username && username !== user.username) {
+		if (username !== user.username) {
 			const existingUser = await User.findOne({ username });
 			if (existingUser) {
 				return res.status(400).json({ error: "Username already exists" });
@@ -161,13 +161,13 @@ export const updateUser = async (req: Request, res: Response) => {
 			coverImg = uploadedResponse.secure_url;
 		}
 
-		user.fullName = fullName || user.fullName;
-		user.email = email || user.email;
-		user.username = username || user.username;
-		user.bio = bio || user.bio;
-		user.link = link || user.link;
-		user.profileImg = profileImg || user.profileImg;
-		user.coverImg = coverImg || user.coverImg;
+		user.fullName = fullName ?? user.fullName;
+		user.email = email ?? user.email;
+		user.username = username ?? user.username;
+		user.bio = bio ?? user.bio;
+		user.link = link ?? user.link;
+		user.profileImg = profileImg ?? user.profileImg;
+		user.coverImg = coverImg ?? user.coverImg;
 
 		user = await user.save();
 

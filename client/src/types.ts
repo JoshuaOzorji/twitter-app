@@ -49,3 +49,15 @@ export type Notification = {
 	createdAt: string;
 	updatedAt: string;
 };
+
+export type FormData = {
+	fullName: string;
+	username: string;
+	email: string;
+	bio: string;
+	link: string;
+	newPassword: string;
+	currentPassword: string;
+	profileImg?: string | null;
+	coverImg?: string | null;
+};

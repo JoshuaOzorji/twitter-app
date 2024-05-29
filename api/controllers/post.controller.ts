@@ -197,7 +197,7 @@ export const getUserPosts = async (req: Request, res: Response) => {
 
 		if (!user) return res.status(404).json({ error: "User not found" });
 
-		const posts = await Post.findOne({ user: user._id })
+		const posts = await Post.find({ user: user._id })
 			.sort({ createdAt: -1 })
 			.populate({ path: "user", select: "-password" })
 			.populate({ path: "comments.user", select: "-password" });

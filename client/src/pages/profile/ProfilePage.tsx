@@ -4,9 +4,6 @@ import { Link, useParams } from "react-router-dom";
 import Posts from "../../components/common/Posts";
 import ProfileHeaderSkeleton from "../../components/skeletons/ProfileHeaderSkeleton";
 import EditProfileModal from "./EditProfileModal";
-
-import { POSTS } from "../../utils/db/dummy";
-
 import { FaArrowLeft } from "react-icons/fa6";
 import { IoCalendarOutline } from "react-icons/io5";
 import { FaLink } from "react-icons/fa";
@@ -15,15 +12,14 @@ import { useQuery } from "@tanstack/react-query";
 import { User } from "../../types";
 import { formatMemberSinceDate } from "../../utils/date";
 import { useFollow } from "../../hooks/useFollow";
+import { useUpdateUserProfile } from "../../hooks/useUpdateUserProfile";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const ProfilePage = () => {
-	const [coverImg, setCoverImg] = useState<string | ArrayBuffer | null>(null);
+	const [coverImg, setCoverImg] = useState<string | null>(null);
 
-	const [profileImg, setProfileImg] = useState<string | ArrayBuffer | null>(
-		null,
-	);
+	const [profileImg, setProfileImg] = useState<string | null>(null);
 
 	const [feedType, setFeedType] = useState("posts");
 
@@ -45,7 +41,7 @@ const ProfilePage = () => {
 					`${API_BASE_URL}/api/users/profile/${username}`,
 					{ credentials: "include" },
 				);
-
+				console.log("Response:", response);
 				const data = await response.json();
 				if (!response.ok) {
 					throw new Error(data.error || "Something went wrong");
@@ -58,11 +54,17 @@ const ProfilePage = () => {
 		},
 	});
 
-	// PROFILE OWNER
-	const isMyProfile = authUser && authUser._id === user?._id;
+	const { isUpdatingProfile, updateProfile } = useUpdateUserProfile();
 
+	// PROFILE OWNER
+	const isMyProfile = authUser && user && authUser._id === user._id;
+
+	console.log("isMyProfile:", isMyProfile);
+	console.log("NotMyProfile:", !isMyProfile);
+	console.log("authUser:", authUser);
+	console.log("user:", user);
 	// USER DURATION
-	const memberSinceData = formatMemberSinceDate(user?._id);
+	const memberSinceDate = formatMemberSinceDate(user?._id);
 
 	//IF FOLLOWING
 	const amIFollowing = authUser?.following.includes(user?._id);
@@ -76,9 +78,9 @@ const ProfilePage = () => {
 			const reader = new FileReader();
 			reader.onload = () => {
 				if (state === "coverImg") {
-					setCoverImg(reader.result);
+					setCoverImg(reader.result as string);
 				} else if (state === "profileImg") {
-					setProfileImg(reader.result);
+					setProfileImg(reader.result as string);
 				}
 			};
 			reader.readAsDataURL(file);
@@ -113,12 +115,12 @@ const ProfilePage = () => {
 								<div className='flex flex-col'>
 									<p className='font-bold text-lg'>{user?.fullName}</p>
 									<span className='text-sm text-slate-500'>
-										{POSTS?.length} posts
+										{user.posts?.length} posts
 									</span>
 								</div>
 							</div>
 							{/* COVER IMG */}
-							<div className='relative group/cover'>
+							<div className='relative group/cover '>
 								<img
 									src={getImageSrc(coverImg, user?.coverImg || "/cover.png")}
 									className='h-52 w-full object-cover'
@@ -166,24 +168,49 @@ const ProfilePage = () => {
 							</div>
 
 							<div className='flex justify-end px-4 mt-5'>
-								{isMyProfile && <EditProfileModal />}
+								{/* {isMyProfile && <EditProfileModal authUser={authUser} />}
 								{!isMyProfile && (
 									<button
 										className='btn btn-outline rounded-full btn-sm'
-										onClick={() => alert("Followed successfully")}>
+										onClick={() => follow(user?._id)}>
+										{isPending && "Loading..."}
+										{!isPending && amIFollowing && "Unfollow"}
+										{!isPending && !amIFollowing && "Follow"}
 										Follow
 									</button>
+								)} */}
+
+								{isMyProfile ? (
+									<EditProfileModal authUser={authUser} />
+								) : (
+									<button
+										className='btn btn-outline rounded-full btn-sm'
+										onClick={() => follow(user?._id)}>
+										{isPending
+											? "Loading..."
+											: amIFollowing
+											? "Unfollow"
+											: "Follow"}
+									</button>
 								)}
+
 								{(coverImg || profileImg) && (
 									<button
 										className='btn btn-primary rounded-full btn-sm text-white px-4 ml-2'
-										onClick={() => alert("Profile updated successfully")}>
-										Update
+										onClick={async () => {
+											await updateProfile({
+												coverImg,
+												profileImg,
+											});
+											setProfileImg(null);
+											setCoverImg(null);
+										}}>
+										{isUpdatingProfile ? "Updating..." : "Update"}
 									</button>
 								)}
 							</div>
 
-							<div className='flex flex-col gap-4 mt-14 px-4'>
+							<div className='flex flex-col gap-4 my-6 px-4'>
 								<div className='flex flex-col'>
 									<span className='font-bold text-lg'>{user?.fullName}</span>
 									<span className='text-sm text-slate-500'>
@@ -210,7 +237,7 @@ const ProfilePage = () => {
 									<div className='flex gap-2 items-center'>
 										<IoCalendarOutline className='w-4 h-4 text-slate-500' />
 										<span className='text-sm text-slate-500'>
-											{memberSinceData}
+											{memberSinceDate}
 										</span>
 									</div>
 								</div>
@@ -229,7 +256,8 @@ const ProfilePage = () => {
 									</div>
 								</div>
 							</div>
-							<div className='flex w-full border-b border-gray-700 mt-4'>
+
+							<div className='flex w-full border-b border-gray-700'>
 								<div
 									className='flex justify-center flex-1 p-3 hover:bg-secondary transition duration-300 relative cursor-pointer'
 									onClick={() => setFeedType("posts")}>
@@ -250,7 +278,7 @@ const ProfilePage = () => {
 						</>
 					)}
 
-					<Posts />
+					<Posts feedType={feedType} username={username} userId={user?._id} />
 				</div>
 			</div>
 		</>

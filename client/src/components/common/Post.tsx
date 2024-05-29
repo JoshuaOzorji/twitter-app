@@ -23,11 +23,11 @@ type Post = {
 };
 
 const Post = ({ post }: PostProps) => {
+	const [comment, setComment] = useState("");
+
 	const { data: authUser } = useQuery<User>({ queryKey: ["authUser"] });
 
 	const queryClient = useQueryClient();
-
-	const [comment, setComment] = useState("");
 
 	const postOwner = post.user;
 
@@ -38,6 +38,8 @@ const Post = ({ post }: PostProps) => {
 	const formattedDate = post.createdAt
 		? formatPostDate(post.createdAt)
 		: "date unknown";
+
+	// const formattedDate = formatPostDate(post.createdAt);
 
 	const { mutate: likePost, isPending: isLiking } = useMutation({
 		mutationFn: async () => {

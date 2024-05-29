@@ -27,23 +27,53 @@ export const formatPostDate = (createdAt: string | number | Date) => {
 	}
 };
 
-export const formatMemberSinceDate = (createdAt: string | number | Date) => {
-	const date = new Date(createdAt);
-	const months = [
-		"January",
-		"February",
-		"March",
-		"April",
-		"May",
-		"June",
-		"July",
-		"August",
-		"September",
-		"October",
-		"November",
-		"December",
-	];
-	const month = months[date.getMonth()];
-	const year = date.getFullYear();
-	return `Joined ${month} ${year}`;
+// export const formatMemberSinceDate = (createdAt: string) => {
+
+// 	const date = new Date(createdAt);
+// 	const months = [
+// 		"January",
+// 		"February",
+// 		"March",
+// 		"April",
+// 		"May",
+// 		"June",
+// 		"July",
+// 		"August",
+// 		"September",
+// 		"October",
+// 		"November",
+// 		"December",
+// 	];
+// 	const month = months[date.getMonth()];
+// 	const year = date.getFullYear();
+// 	return `Joined ${month} ${year}`;
+// };
+export const formatMemberSinceDate = (objectId: string) => {
+	if (typeof objectId === "string" && /^[a-f\d]{24}$/i.test(objectId)) {
+		// Extract the timestamp from the ObjectId and convert it to a date
+		const timestamp = parseInt(objectId.substring(0, 8), 16) * 1000;
+		const date = new Date(timestamp);
+
+		const months = [
+			"January",
+			"February",
+			"March",
+			"April",
+			"May",
+			"June",
+			"July",
+			"August",
+			"September",
+			"October",
+			"November",
+			"December",
+		];
+		const month = months[date.getMonth()];
+		const year = date.getFullYear();
+
+		return `Joined ${month} ${year}`;
+	} else {
+		// If objectId is not a valid ObjectId, return "Invalid Date"
+		return "Invalid Date";
+	}
 };
