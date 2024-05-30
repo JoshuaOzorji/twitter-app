@@ -31,7 +31,8 @@ const ProfilePage = () => {
 	// FOLLOW HOOK
 	const { follow, isPending } = useFollow();
 
-	const { data: authUser } = useQuery<User>({ queryKey: ["userProfile"] });
+	// Fetch authenticated user
+	const { data: authUser } = useQuery<User>({ queryKey: ["authUser"] });
 
 	const { data: user, isLoading } = useQuery({
 		queryKey: ["userProfile"],
@@ -168,18 +169,6 @@ const ProfilePage = () => {
 							</div>
 
 							<div className='flex justify-end px-4 mt-5'>
-								{/* {isMyProfile && <EditProfileModal authUser={authUser} />}
-								{!isMyProfile && (
-									<button
-										className='btn btn-outline rounded-full btn-sm'
-										onClick={() => follow(user?._id)}>
-										{isPending && "Loading..."}
-										{!isPending && amIFollowing && "Unfollow"}
-										{!isPending && !amIFollowing && "Follow"}
-										Follow
-									</button>
-								)} */}
-
 								{isMyProfile ? (
 									<EditProfileModal authUser={authUser} />
 								) : (

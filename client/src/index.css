@@ -1,3 +1,27 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.text-h1 {
+	@apply text-xl md:text-2xl;
+}
+
+.text-h2 {
+	@apply text-[13px] md:text-base;
+}
+
+.text-h3 {
+	@apply text-[13px] md:text-[0.92rem];
+}
+
+.text-h4 {
+	@apply text-[12px] md:text-sm;
+}
+
+.text-h5 {
+	@apply text-[12px] md:text-[13px];
+}
+
+.text-h6 {
+	@apply text-[10px] md:text-[12px];
+}
