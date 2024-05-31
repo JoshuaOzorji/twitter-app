@@ -17,12 +17,14 @@ const Layout = ({ children }: Props) => {
 		);
 	}
 	return (
-		<main className='w-[80%] flex mx-auto'>
-			<div className='w-[15%]'>{authUser && <Sidebar />}</div>
+		<main className='w-full lg:w-[75%] flex flex-row mx-auto relative'>
+			<div className='w-[10%] lg:w-[7%] z-50'>{authUser && <Sidebar />}</div>
 
-			<div className='w-[60%]'>{children}</div>
+			<div className='flex-1 w-[90%] lg:w-[64%] '>{children}</div>
 
-			<div className='w-[25%]'>{authUser && <RightPanel />}</div>
+			<div className='hidden lg:inline-block lg:w-[29%] lg:pl-2'>
+				{authUser && <RightPanel />}
+			</div>
 		</main>
 	);
 };

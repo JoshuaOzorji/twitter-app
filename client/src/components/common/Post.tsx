@@ -10,6 +10,7 @@ import { PostType, User } from "../../types";
 import LoadingSpinner from "./LoadingSpinner";
 import toast from "react-hot-toast";
 import { formatPostDate } from "../../utils/date";
+import { IoMdHeart } from "react-icons/io";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -261,7 +262,7 @@ const Post = ({ post }: PostProps) => {
 									<FaRegHeart className='w-4 h-4 cursor-pointer text-slate-500 group-hover:text-pink-500' />
 								)}
 								{isLiked && (
-									<FaRegHeart className='w-4 h-4 cursor-pointer text-pink-500 ' />
+									<IoMdHeart className='w-4 h-4 cursor-pointer text-red-500 ' />
 								)}
 
 								<span

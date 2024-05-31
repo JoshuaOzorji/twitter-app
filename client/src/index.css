@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+.animate {
+	@apply transition-all duration-500;
+}
+
 .text-h1 {
 	@apply text-xl md:text-2xl;
 }
