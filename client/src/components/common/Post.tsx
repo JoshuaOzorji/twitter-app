@@ -2,7 +2,7 @@ import { FaRegComment } from "react-icons/fa";
 import { BiRepost } from "react-icons/bi";
 import { FaRegHeart } from "react-icons/fa";
 import { FaRegBookmark } from "react-icons/fa6";
-import { FaTrash } from "react-icons/fa";
+import { IoIosMore } from "react-icons/io";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -40,8 +40,32 @@ const Post = ({ post }: PostProps) => {
 		? formatPostDate(post.createdAt)
 		: "date unknown";
 
-	// const formattedDate = formatPostDate(post.createdAt);
+	//DELETE
+	const { mutate: deletePost, isPending: isDeleting } = useMutation({
+		mutationFn: async () => {
+			try {
+				const response = await fetch(`${API_BASE_URL}/api/posts/${post._id}`, {
+					method: "DELETE",
+					credentials: "include",
+				});
+				const data = await response.json();
 
+				if (!response.ok) {
+					throw new Error(data.error || "Something went wrong");
+				}
+				return data;
+			} catch (error) {
+				console.error(error);
+				throw error;
+			}
+		},
+		onSuccess: () => {
+			toast.success("Post deleted successfully");
+			queryClient.invalidateQueries({ queryKey: ["posts"] });
+		},
+	});
+
+	//LIKEPOST
 	const { mutate: likePost, isPending: isLiking } = useMutation({
 		mutationFn: async () => {
 			try {
@@ -120,7 +144,9 @@ const Post = ({ post }: PostProps) => {
 		},
 	});
 
-	const handleDeletePost = () => {};
+	const handleDeletePost = () => {
+		deletePost();
+	};
 
 	const handlePostComment = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -135,7 +161,7 @@ const Post = ({ post }: PostProps) => {
 
 	return (
 		<>
-			<div className='flex gap-2 items-start p-4 border-b border-gray-700'>
+			<div className='flex gap-2 items-start p-4 border-b border-gray-700 border-r'>
 				<div className='avatar'>
 					<Link
 						to={`/profile/${postOwner.username}`}
@@ -157,10 +183,20 @@ const Post = ({ post }: PostProps) => {
 						</span>
 						{isMyPost && (
 							<span className='flex justify-end flex-1'>
-								<FaTrash
-									className='cursor-pointer hover:text-red-500'
-									onClick={handleDeletePost}
-								/>
+								{!isDeleting && (
+									<div className='dropdown dropdown-left'>
+										<div tabIndex={0} role='button' className=''>
+											<IoIosMore />
+										</div>
+										<ul
+											tabIndex={0}
+											className='dropdown-content z-[1] menu shadow bg-base-100 rounded-box w-fit text-h4'>
+											<li>
+												<a onClick={handleDeletePost}>Delete</a>
+											</li>
+										</ul>
+									</div>
+								)}
 							</span>
 						)}
 					</div>

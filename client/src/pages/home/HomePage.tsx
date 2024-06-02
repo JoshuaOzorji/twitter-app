@@ -12,7 +12,7 @@ const HomePage = () => {
 	}, []);
 
 	return (
-		<div className='border-gray-700 min-h-screen w-full'>
+		<div className='border-gray-700 min-h-screen w-full border-r'>
 			{/* Header */}
 			<div className='flex w-full border-b border-gray-700'>
 				<div

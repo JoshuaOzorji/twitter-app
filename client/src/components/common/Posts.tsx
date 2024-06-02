@@ -48,7 +48,7 @@ const Posts = ({ feedType, username, userId }: Props) => {
 				if (!response.ok) {
 					throw new Error(data.error || "Failed to create account");
 				}
-
+				console.log("post data:", data);
 				return data;
 			} catch (error) {
 				console.error(error);
@@ -70,10 +70,11 @@ const Posts = ({ feedType, username, userId }: Props) => {
 					<PostSkeleton />
 				</div>
 			)}
+
 			{!isLoading && !isRefetching && posts?.length === 0 && (
 				<p className='text-center my-4'>No posts in this tab. Switch 👻</p>
 			)}
-			{!isLoading && posts && (
+			{!isLoading && !isRefetching && posts && (
 				<div>
 					{posts.map((post) => (
 						<Post key={post._id} post={post} />

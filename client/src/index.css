@@ -11,11 +11,11 @@
 }
 
 .text-h2 {
-	@apply text-[13px] md:text-base;
+	@apply text-[14px] md:text-base;
 }
 
 .text-h3 {
-	@apply text-[13px] md:text-[0.92rem];
+	@apply text-[13px] md:text-[0.95rem];
 }
 
 .text-h4 {

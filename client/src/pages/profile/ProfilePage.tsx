@@ -47,7 +47,7 @@ const ProfilePage = () => {
 					`${API_BASE_URL}/api/users/profile/${username}`,
 					{ credentials: "include" },
 				);
-				console.log("Response:", response);
+
 				const data = await response.json();
 				if (!response.ok) {
 					throw new Error(data.error || "Something went wrong");
@@ -115,11 +115,10 @@ const ProfilePage = () => {
 							</Link>
 							<div className='flex flex-col'>
 								<p className='font-bold text-lg'>{user?.fullName}</p>
-								<span className='text-sm text-slate-500'>
-									{user.posts?.length} posts
-								</span>
+								<span className='text-sm text-slate-500'>posts</span>
 							</div>
 						</div>
+
 						{/* COVER IMG */}
 						<div className='relative group/cover '>
 							<img
@@ -214,11 +213,10 @@ const ProfilePage = () => {
 										<>
 											<FaLink className='w-3 h-3 text-slate-500' />
 											<a
-												href='https://youtube.com/@asaprogrammer_'
 												target='_blank'
 												rel='noreferrer'
 												className='text-sm text-blue-500 hover:underline'>
-												youtube.com/@asaprogrammer_
+												{user?.link}
 											</a>
 										</>
 									</div>
