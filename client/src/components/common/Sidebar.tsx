@@ -2,16 +2,19 @@ import XSvg from "../svgs/X";
 
 import { MdHomeFilled } from "react-icons/md";
 import { RiNotification4Fill } from "react-icons/ri";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { User } from "../../types";
 import { BiSolidUser } from "react-icons/bi";
+import { NotificationResponse } from "../../pages/notification/NotificationPage";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const Sidebar = () => {
 	const queryClient = useQueryClient();
+	const location = useLocation();
+
 	const { mutate: logout } = useMutation({
 		mutationFn: async () => {
 			try {
@@ -43,12 +46,27 @@ const Sidebar = () => {
 
 	const { data: authUser } = useQuery<User>({ queryKey: ["authUser"] });
 
+	const { data } = useQuery<NotificationResponse>({
+		queryKey: ["notifications"],
+		queryFn: async () => {
+			const response = await fetch(`${API_BASE_URL}/api/notifications`, {
+				credentials: "include",
+			});
+			const data = await response.json();
+			return data;
+		},
+		enabled: location.pathname !== "/notifications",
+	});
+
+	const notifications = data?.notificationCount;
+
 	return (
 		<div className='sticky top-0 left-0 h-screen flex flex-col border-r border-gray-700 justify-between items-center py-4'>
 			<div>
 				<Link to='/' className='flex justify-center md:justify-start'>
 					<XSvg className='px-2 w-10 h-10 md:w-11 md:h-11 rounded-full fill-white hover:bg-stone-900 animate' />
 				</Link>
+
 				<ul className='flex flex-col mt-4 items-center space-y-2'>
 					<Link
 						to='/'
@@ -58,8 +76,16 @@ const Sidebar = () => {
 
 					<Link
 						to='/notifications'
-						className='flex items-center hover:bg-stone-900 transition-all rounded-full duration-300 cursor-pointer p-2 animate'>
+						className='flex items-center hover:bg-stone-900 transition-all rounded-full duration-300 cursor-pointer p-2 animate relative'
+						onClick={queryClient.invalidateQueries({
+							queryKey: ["notification"],
+						})}>
 						<RiNotification4Fill className='w-6 h-6 md:h-7 md:w-7' />
+						{notifications !== undefined && notifications > 0 && (
+							<span className='absolute top-1 right-2 bg-red-600 text-white rounded-full px-1 text-xs'>
+								{notifications}
+							</span>
+						)}
 					</Link>
 
 					<Link

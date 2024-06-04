@@ -76,8 +76,23 @@ const CreatePost = () => {
 		}
 	};
 
+	// const handleTextChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+	// 	if (e.target.value.length <= 280) {
+	// 		setText(e.target.value);
+	// 	}
+	// };
+
+	const handleTextChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+		const newText = e.target.value;
+		if (newText.length <= 280) {
+			setText(newText);
+		} else {
+			setText(newText.substring(0, 280));
+		}
+	};
+
 	return (
-		<div className='flex p-4 items-start gap-4 border-b border-gray-700 border-r'>
+		<div className='flex p-4 items-start gap-4 border-b border-gray-700'>
 			<div className='avatar'>
 				<div className='w-8 rounded-full'>
 					<img src={authUser?.profileImg || "/avatar-placeholder.png"} />
@@ -85,10 +100,11 @@ const CreatePost = () => {
 			</div>
 			<form className='flex flex-col gap-2 w-full' onSubmit={handleSubmit}>
 				<textarea
-					className='textarea w-full p-2 text-h2 resize-none focus:outline-none border-gray-800 border rounded-md'
+					className='textarea w-full p-2 text-h2 resize-none focus:outline-none border-gray-800 border rounded-md text-wrap'
 					placeholder='What is happening?!'
 					value={text}
-					onChange={(e) => setText(e.target.value)}
+					// onChange={(e) => setText(e.target.value)}
+					onChange={handleTextChange}
 				/>
 				{img && (
 					<div className='relative w-72 mx-auto'>

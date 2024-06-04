@@ -13,6 +13,7 @@ import { User } from "../../types";
 import { formatMemberSinceDate } from "../../utils/date";
 import { useFollow } from "../../hooks/useFollow";
 import { useUpdateUserProfile } from "../../hooks/useUpdateUserProfile";
+import PostSkeleton from "../../components/skeletons/PostSkeleton";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -39,13 +40,39 @@ const ProfilePage = () => {
 	// Fetch authenticated user
 	const { data: authUser } = useQuery<User>({ queryKey: ["authUser"] });
 
-	const { data: user, isLoading } = useQuery({
+	const { data: userPosts } = useQuery({
+		queryKey: ["userPosts"],
+		queryFn: async () => {
+			try {
+				const response = await fetch(
+					`${API_BASE_URL}/api/posts/user/${username}`,
+					{ credentials: "include" },
+				);
+
+				const data = await response.json();
+				if (!response.ok) {
+					throw new Error(data.error || "Something went wrong");
+				}
+				return data;
+			} catch (error) {
+				console.error(error);
+				throw error;
+			}
+		},
+	});
+
+	const {
+		data: user,
+		isLoading,
+		refetch,
+		isRefetching,
+	} = useQuery({
 		queryKey: ["userProfile"],
 		queryFn: async () => {
 			try {
 				const response = await fetch(
 					`${API_BASE_URL}/api/users/profile/${username}`,
-					{ credentials: "include" },
+					{ credentials: "include", method: "GET" },
 				);
 
 				const data = await response.json();
@@ -99,15 +126,23 @@ const ProfilePage = () => {
 		return defaultImg;
 	};
 
+	useEffect(() => {
+		refetch();
+	}, [username, refetch]);
 	return (
-		<div className='min-h-screen'>
+		<div className='min-h-screen w-full '>
 			{/* HEADER */}
-			{isLoading && <ProfileHeaderSkeleton />}
-			{!isLoading && !user && (
+			{(isLoading || isRefetching) && (
+				<div className='flex flex-col justify-center '>
+					<ProfileHeaderSkeleton />
+					<PostSkeleton />
+				</div>
+			)}
+			{!isLoading && !isRefetching && !user && (
 				<p className='text-center text-lg mt-4'>User not found</p>
 			)}
 			<div className='flex flex-col'>
-				{!isLoading && user && (
+				{!isLoading && !isRefetching && user && (
 					<section>
 						<div className='flex gap-10 px-4 py-2 items-center'>
 							<Link to='/'>
@@ -115,7 +150,9 @@ const ProfilePage = () => {
 							</Link>
 							<div className='flex flex-col'>
 								<p className='font-bold text-lg'>{user?.fullName}</p>
-								<span className='text-sm text-slate-500'>posts</span>
+								<span className='text-sm text-slate-500'>
+									{userPosts?.length} posts
+								</span>
 							</div>
 						</div>
 

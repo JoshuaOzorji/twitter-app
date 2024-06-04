@@ -7,22 +7,30 @@ import { IoMdHeart } from "react-icons/io";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Notification } from "../../types";
 import toast from "react-hot-toast";
+import { useEffect } from "react";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+export type NotificationResponse = {
+	notifications: Notification[];
+	notificationCount: number;
+};
 
 const NotificationPage = () => {
 	const queryClient = useQueryClient();
 
-	const { data: notifications, isLoading } = useQuery<Notification[]>({
+	const { data, isLoading } = useQuery<NotificationResponse>({
 		queryKey: ["notifications"],
 		queryFn: async () => {
 			try {
 				const response = await fetch(`${API_BASE_URL}/api/notifications`, {
 					credentials: "include",
 				});
-				const data = await response.json();
 
-				if (!response.ok) throw new Error(data.error || "Something went wrong");
+				const data = await response.json();
+				if (!response.ok) {
+					throw new Error(data.error || "Failed to create account");
+				}
 
 				return data;
 			} catch (error) {
@@ -31,6 +39,29 @@ const NotificationPage = () => {
 			}
 		},
 	});
+
+	const notifications = data?.notifications;
+
+	const { mutate: notificationsRead } = useMutation({
+		mutationFn: async () => {
+			const response = await fetch(`${API_BASE_URL}/api/notifications/read`, {
+				method: "POST",
+				credentials: "include",
+			});
+
+			const data = await response.json();
+			if (!response.ok) {
+				throw new Error(data.error || "Something went wrong");
+			}
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["notifications"] });
+		},
+	});
+
+	useEffect(() => {
+		notificationsRead();
+	}, [notificationsRead]);
 
 	const { mutate: deleteNotifications } = useMutation({
 		mutationFn: async () => {
@@ -70,20 +101,22 @@ const NotificationPage = () => {
 			<div className='flex justify-between items-center p-4 border-b border-gray-700'>
 				<p className='font-bold'>Notifications</p>
 
-				<div className='dropdown dropdown-bottom dropdown-end'>
-					<div tabIndex={0} role='button' className=' m-1'>
-						<IoSettingsOutline className='w-4 h-4' />
+				{notifications && notifications?.length > 0 && (
+					<div className='dropdown dropdown-bottom dropdown-end'>
+						<div tabIndex={0} role='button' className=' m-1'>
+							<IoSettingsOutline className='w-4 h-4' />
+						</div>
+						<ul
+							tabIndex={0}
+							className='dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52'>
+							<li>
+								<a onClick={handleDeleteNotifications}>
+									Delete all notifications
+								</a>
+							</li>
+						</ul>
 					</div>
-					<ul
-						tabIndex={0}
-						className='dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52'>
-						<li>
-							<a onClick={handleDeleteNotifications}>
-								Delete all notifications
-							</a>
-						</li>
-					</ul>
-				</div>
+				)}
 			</div>
 
 			{/* LOADING */}
@@ -99,7 +132,7 @@ const NotificationPage = () => {
 				<div className='border-b border-gray-700' key={notification._id}>
 					<div className='flex gap-2 p-3'>
 						{notification.type === "follow" && (
-							<FaUser className='w-7 h-7 text-primary' />
+							<FaUser className='w-5 h-5 text-primary' />
 						)}
 						{notification.type === "like" && (
 							<IoMdHeart className='w-5 h-5 text-red-500' />

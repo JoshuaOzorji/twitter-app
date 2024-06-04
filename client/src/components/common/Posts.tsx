@@ -7,9 +7,9 @@ import { useEffect } from "react";
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 interface Props {
-	feedType: string;
+	feedType?: string;
 	username?: string;
-	userId: string;
+	userId?: string;
 }
 
 const Posts = ({ feedType, username, userId }: Props) => {
@@ -62,7 +62,7 @@ const Posts = ({ feedType, username, userId }: Props) => {
 	}, [feedType, refetch, username]);
 
 	return (
-		<>
+		<main>
 			{(isLoading || isRefetching) && (
 				<div className='flex flex-col justify-center'>
 					<PostSkeleton />
@@ -75,13 +75,13 @@ const Posts = ({ feedType, username, userId }: Props) => {
 				<p className='text-center my-4'>No posts in this tab. Switch 👻</p>
 			)}
 			{!isLoading && !isRefetching && posts && (
-				<div>
+				<div className='flex flex-col'>
 					{posts.map((post) => (
 						<Post key={post._id} post={post} />
 					))}
 				</div>
 			)}
-		</>
+		</main>
 	);
 };
 export default Posts;

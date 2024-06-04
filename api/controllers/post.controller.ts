@@ -202,7 +202,7 @@ export const getUserPosts = async (req: Request, res: Response) => {
 			.populate({ path: "user", select: "-password" })
 			.populate({ path: "comments.user", select: "-password" });
 
-		res.status(200).json({ posts });
+		res.status(200).json(posts);
 	} catch (error: any) {
 		handleServerError(res, error, "getUserPosts");
 	}
