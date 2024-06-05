@@ -25,7 +25,6 @@ export const protectRoute = async (
 			return res.status(500).json({ error: "JWT secret not found" });
 		}
 
-		// JWT_SECRET is defined, so it's safe to use
 		const jwtSecret: Secret = process.env.JWT_SECRET;
 
 		const decoded = jwt.verify(token, jwtSecret) as JwtPayload;

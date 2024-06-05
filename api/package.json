@@ -3,10 +3,11 @@
 	"version": "1.0.0",
 	"description": "Twitter app",
 	"main": "server.ts",
+	"type": "module",
 	"scripts": {
 		"build": "npm install && npx tsc",
-		"start": "NODE_ENV=production node server.ts",
-		"dev": "set NODE_ENV=development && nodemon server.ts"
+		"start": "node server.ts",
+		"dev": "nodemon server.ts"
 	},
 	"keywords": [],
 	"author": "",
