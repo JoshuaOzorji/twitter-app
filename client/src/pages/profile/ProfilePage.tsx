@@ -1,6 +1,5 @@
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-
 import Posts from "../../components/common/Posts";
 import ProfileHeaderSkeleton from "../../components/skeletons/ProfileHeaderSkeleton";
 import EditProfileModal from "./EditProfileModal";
@@ -130,7 +129,7 @@ const ProfilePage = () => {
 		refetch();
 	}, [username, refetch]);
 	return (
-		<div className='min-h-screen w-full border-r'>
+		<main className='min-h-screen w-full border-gray-700 border-r'>
 			{/* HEADER */}
 			{(isLoading || isRefetching) && (
 				<div className='flex flex-col justify-center '>
@@ -304,7 +303,7 @@ const ProfilePage = () => {
 
 				<Posts feedType={feedType} username={username} userId={user?._id} />
 			</div>
-		</div>
+		</main>
 	);
 };
 export default ProfilePage;

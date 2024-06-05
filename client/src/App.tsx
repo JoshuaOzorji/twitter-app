@@ -1,15 +1,12 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import LoginPage from "./pages/auth/LoginPage";
 import HomePage from "./pages/home/HomePage";
-
 import NotificationPage from "./pages/notification/NotificationPage";
-import ProfilePage from "./pages/profile/ProfilePage";
 import { Toaster } from "react-hot-toast";
-
 import SignUpPage from "./pages/auth/SignupPage";
-
 import { useQuery } from "@tanstack/react-query";
 import Layout from "./layout/Layout";
+import ProfilePage from "./pages/profile/ProfilePage";
 
 const App = () => {
 	const { data: authUser } = useQuery({ queryKey: ["authUser"] });

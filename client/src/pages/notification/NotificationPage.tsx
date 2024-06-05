@@ -99,7 +99,7 @@ const NotificationPage = () => {
 	};
 
 	return (
-		<main className='border-gray-700 min-h-screen border'>
+		<main className='border-gray-700 min-h-screen border-r '>
 			<div className='flex justify-between items-center p-4 border-b border-gray-700'>
 				<p className='font-bold'>Notifications</p>
 
