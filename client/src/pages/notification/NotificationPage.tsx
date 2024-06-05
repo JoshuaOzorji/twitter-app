@@ -38,6 +38,7 @@ const NotificationPage = () => {
 				throw error;
 			}
 		},
+		refetchOnWindowFocus: true,
 	});
 
 	const notifications = data?.notifications;
@@ -56,6 +57,7 @@ const NotificationPage = () => {
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["notifications"] });
+			queryClient.invalidateQueries({ queryKey: ["notificationsCount"] });
 		},
 	});
 
@@ -97,13 +99,13 @@ const NotificationPage = () => {
 	};
 
 	return (
-		<div className='border-l border-r border-gray-700 min-h-screen'>
+		<main className='border-gray-700 min-h-screen border'>
 			<div className='flex justify-between items-center p-4 border-b border-gray-700'>
 				<p className='font-bold'>Notifications</p>
 
 				{notifications && notifications?.length > 0 && (
 					<div className='dropdown dropdown-bottom dropdown-end'>
-						<div tabIndex={0} role='button' className=' m-1'>
+						<div tabIndex={0} role='button'>
 							<IoSettingsOutline className='w-4 h-4' />
 						</div>
 						<ul
@@ -158,7 +160,7 @@ const NotificationPage = () => {
 					</div>
 				</div>
 			))}
-		</div>
+		</main>
 	);
 };
 export default NotificationPage;

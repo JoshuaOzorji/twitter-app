@@ -1,8 +1,7 @@
 import XSvg from "../svgs/X";
-
 import { MdHomeFilled } from "react-icons/md";
 import { RiNotification4Fill } from "react-icons/ri";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { User } from "../../types";
@@ -13,7 +12,6 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const Sidebar = () => {
 	const queryClient = useQueryClient();
-	const location = useLocation();
 
 	const { mutate: logout } = useMutation({
 		mutationFn: async () => {
@@ -47,7 +45,7 @@ const Sidebar = () => {
 	const { data: authUser } = useQuery<User>({ queryKey: ["authUser"] });
 
 	const { data } = useQuery<NotificationResponse>({
-		queryKey: ["notifications"],
+		queryKey: ["notificationsCount"],
 		queryFn: async () => {
 			const response = await fetch(`${API_BASE_URL}/api/notifications`, {
 				credentials: "include",
@@ -55,7 +53,7 @@ const Sidebar = () => {
 			const data = await response.json();
 			return data;
 		},
-		enabled: location.pathname !== "/notifications",
+		refetchOnWindowFocus: true,
 	});
 
 	const notifications = data?.notificationCount;
@@ -76,10 +74,7 @@ const Sidebar = () => {
 
 					<Link
 						to='/notifications'
-						className='flex items-center hover:bg-stone-900 transition-all rounded-full duration-300 cursor-pointer p-2 animate relative'
-						onClick={queryClient.invalidateQueries({
-							queryKey: ["notification"],
-						})}>
+						className='flex items-center hover:bg-stone-900 transition-all rounded-full duration-300 cursor-pointer p-2 animate relative'>
 						<RiNotification4Fill className='w-6 h-6 md:h-7 md:w-7' />
 						{notifications !== undefined && notifications > 0 && (
 							<span className='absolute top-1 right-2 bg-red-600 text-white rounded-full px-1 text-xs'>

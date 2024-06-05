@@ -30,7 +30,7 @@ const HomePage = () => {
 					onClick={() => setFeedType("following")}>
 					Following
 					{feedType === "following" && (
-						<div className='absolute bottom-0 w-10  h-1 rounded-full bg-primary'></div>
+						<div className='absolute bottom-0 w-10 h-1 rounded-full bg-primary'></div>
 					)}
 				</div>
 			</div>

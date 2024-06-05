@@ -130,7 +130,7 @@ const ProfilePage = () => {
 		refetch();
 	}, [username, refetch]);
 	return (
-		<div className='min-h-screen w-full '>
+		<div className='min-h-screen w-full border-r'>
 			{/* HEADER */}
 			{(isLoading || isRefetching) && (
 				<div className='flex flex-col justify-center '>
