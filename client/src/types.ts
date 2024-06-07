@@ -1,4 +1,5 @@
 import { Document, Types } from "mongoose";
+
 export type UserType = {
 	_id: Types.ObjectId;
 	username: string;

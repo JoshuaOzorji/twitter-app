@@ -4,11 +4,12 @@ import { IoIosMore } from "react-icons/io";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { PostType, User } from "../../types";
+import { CommentType, PostType, User } from "../../types";
 import LoadingSpinner from "./LoadingSpinner";
 import toast from "react-hot-toast";
 import { formatPostDate } from "../../utils/date";
 import { IoMdHeart } from "react-icons/io";
+import { Types } from "mongoose";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -30,7 +31,9 @@ const Post = ({ post }: PostProps) => {
 
 	const postOwner = post.user;
 
-	const isLiked = authUser ? post.likes.includes(authUser._id) : false;
+	const isLiked = authUser
+		? post.likes.includes(authUser._id as unknown as Types.ObjectId)
+		: false;
 
 	const isMyPost = authUser && authUser._id === post.user._id;
 
@@ -235,7 +238,7 @@ const Post = ({ post }: PostProps) => {
 											No comments yet 🤔 Be the first one 😉
 										</p>
 									)}
-									{post.comments.map((comment) => (
+									{post.comments.map((comment: CommentType) => (
 										<div
 											key={comment._id.toString()}
 											className='flex gap-2 items-start'>
