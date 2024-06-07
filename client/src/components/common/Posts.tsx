@@ -48,7 +48,7 @@ const Posts = ({ feedType, username, userId }: Props) => {
 				if (!response.ok) {
 					throw new Error(data.error || "Failed to create account");
 				}
-				console.log("post data:", data);
+
 				return data;
 			} catch (error) {
 				console.error(error);
