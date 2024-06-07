@@ -222,6 +222,7 @@ const ProfilePage = () => {
 								<button
 									className='btn btn-primary rounded-full btn-sm text-white px-4 ml-2'
 									onClick={async () => {
+										// @ts-expect-error: Ignore TypeScript type error
 										await updateProfile({
 											coverImg,
 											profileImg,
