@@ -3,7 +3,6 @@
 	"version": "1.0.0",
 	"description": "Twitter app",
 	"main": "server.ts",
-	"type": "module",
 	"scripts": {
 		"build": "npm install && npx tsc",
 		"start": "node server.ts",
