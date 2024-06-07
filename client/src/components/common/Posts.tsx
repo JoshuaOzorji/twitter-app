@@ -77,7 +77,7 @@ const Posts = ({ feedType, username, userId }: Props) => {
 			{!isLoading && !isRefetching && posts && (
 				<div className='flex flex-col'>
 					{posts.map((post) => (
-						<Post key={post._id} post={post} />
+						<Post key={post._id.toString()} post={post} />
 					))}
 				</div>
 			)}

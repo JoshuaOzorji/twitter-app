@@ -16,6 +16,7 @@ export type CommentType = {
 };
 
 export type PostType = Document & {
+	_id: Types.ObjectId;
 	user: UserType;
 	text?: string;
 	img?: string;
