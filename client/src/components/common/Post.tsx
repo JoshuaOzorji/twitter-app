@@ -17,11 +17,6 @@ interface PostProps {
 	post: PostType;
 }
 
-type Post = {
-	_id: string;
-	likes: number;
-};
-
 const Post = ({ post }: PostProps) => {
 	const [comment, setComment] = useState("");
 
@@ -86,17 +81,14 @@ const Post = ({ post }: PostProps) => {
 			}
 		},
 
-		onSuccess: (updatedLikes: number) => {
-			// this is not the best UX, bc it will refetch all posts
-			// queryClient.invalidateQueries({ queryKey: ["posts"] });
-
-			// instead, update the cache directly for that post
-			queryClient.setQueryData<Post[]>(["posts"], (oldData) => {
+		onSuccess: (updatedLikes: Types.ObjectId[]) => {
+			//@ts-expect-error: ignore error below
+			queryClient.setQueryData<PostType[] | undefined>(["posts"], (oldData) => {
+				if (!oldData) {
+					return [];
+				}
 				if (!Array.isArray(oldData)) {
-					console.error(
-						"Expected oldData to be an array of posts, but received:",
-						oldData,
-					);
+					console.error(oldData);
 					return oldData;
 				}
 
@@ -226,7 +218,7 @@ const Post = ({ post }: PostProps) => {
 								{post.comments.length}
 							</span>
 						</div>
-						{/* We're using Modal Component from DaisyUI */}
+
 						<dialog
 							id={`comments_modal${post._id}`}
 							className='modal border-none outline-none'>
