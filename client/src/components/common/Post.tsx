@@ -153,7 +153,7 @@ const Post = ({ post }: PostProps) => {
 	};
 
 	return (
-		<div className='flex gap-2 items-start p-4 border-b border-gray-700'>
+		<main className='flex gap-2 items-start p-4 border-b border-gray-700'>
 			<div className='avatar'>
 				<Link
 					to={`/profile/${postOwner.username}`}
@@ -298,7 +298,7 @@ const Post = ({ post }: PostProps) => {
 					</div>
 				</div>
 			</div>
-		</div>
+		</main>
 	);
 };
 export default Post;
