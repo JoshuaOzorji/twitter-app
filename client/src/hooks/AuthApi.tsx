@@ -109,6 +109,7 @@ export const useLogout = () => {
 	const { mutate } = useMutation({
 		mutationFn: async () => {
 			try {
+				console.log("Sending logout request...");
 				const response = await fetch(`${API_BASE_URL}/api/auth/logout`, {
 					method: "POST",
 					credentials: "include",
@@ -118,15 +119,18 @@ export const useLogout = () => {
 				if (!response.ok) {
 					throw new Error(data.error || "Unable to logout");
 				}
+				console.log("Logout successful:", data);
 			} catch (error) {
 				console.error(error);
 				throw error;
 			}
 		},
 		onSuccess: () => {
+			console.log("Invalidating authUser query");
 			queryClient.invalidateQueries({ queryKey: ["authUser"] });
 		},
-		onError: () => {
+		onError: (error) => {
+			console.error("Logout failed:", error);
 			toast.error("Logout failed");
 		},
 	});
