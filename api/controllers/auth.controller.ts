@@ -101,13 +101,19 @@ export const logout = async (req: Request, res: Response) => {
 			maxAge: 0,
 			expires: new Date(0),
 			httpOnly: true,
-			sameSite: "lax",
-			// secure: true,
+			sameSite: "none",
+			secure: true,
+			domain: ".onrender.com",
+			path: "/",
 		});
 
-		// res.clearCookie("jwt");
-
-		console.log("JWT cookie cleared");
+		res.clearCookie("jwt", {
+			httpOnly: true,
+			sameSite: "none",
+			secure: true,
+			domain: ".onrender.com",
+			path: "/",
+		});
 
 		res.status(200).json({ message: "Logged out successfully" });
 	} catch (error: any) {
