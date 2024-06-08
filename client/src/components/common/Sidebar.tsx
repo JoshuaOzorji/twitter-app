@@ -77,7 +77,7 @@ const Sidebar = () => {
 						className='flex items-center hover:bg-stone-900 transition-all rounded-full duration-300 cursor-pointer p-2 animate relative'>
 						<RiNotification4Fill className='w-6 h-6 md:h-7 md:w-7' />
 						{notifications !== undefined && notifications > 0 && (
-							<span className='absolute top-1 right-2 bg-blue-600 text-white rounded-full px-1 text-xs'>
+							<span className='absolute top-1 right-2 bg-blue-500 text-white rounded-full px-1 text-xs'>
 								{notifications}
 							</span>
 						)}
