@@ -97,13 +97,15 @@ export const logout = async (req: Request, res: Response) => {
 	try {
 		console.log("Logout request received");
 
-		res.cookie("jwt", "", {
-			maxAge: 0,
-			expires: new Date(0),
-			httpOnly: true,
-			sameSite: "none",
-			secure: true,
-		});
+		// res.cookie("jwt", "", {
+		// 	maxAge: 0,
+		// 	expires: new Date(0),
+		// 	httpOnly: true,
+		// 	sameSite: "none",
+		// 	secure: true,
+		// });
+
+		res.clearCookie("jwt");
 
 		console.log("JWT cookie cleared");
 
