@@ -2,10 +2,10 @@
 	"name": "api",
 	"version": "1.0.0",
 	"description": "Twitter app",
-	"main": "dist/server.js",
+	"main": "server.ts",
 	"scripts": {
 		"build": "npm install && npx tsc",
-		"start": "node dist/server.js",
+		"start": "node server.ts",
 		"dev": "nodemon server.ts"
 	},
 	"keywords": [],
