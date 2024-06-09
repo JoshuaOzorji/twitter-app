@@ -15,18 +15,18 @@ const cloudinary_1 = require("cloudinary");
 const connectMongoDB_1 = __importDefault(require("./db/connectMongoDB"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
+app.use((0, cors_1.default)({
+    origin: process.env.FRONTEND_URL || "https://twitter-appp.vercel.app",
+    credentials: true,
+}));
 // app.use(
 // 	cors({
 // 		origin: process.env.FRONTEND_URL || "https://twitter-appp.vercel.app",
+// 		methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
 // 		credentials: true,
+// 		allowedHeaders: "Content-Type,Authorization",
 // 	}),
 // );
-app.use((0, cors_1.default)({
-    origin: process.env.FRONTEND_URL || "https://twitter-appp.vercel.app",
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    credentials: true,
-    allowedHeaders: "Content-Type,Authorization",
-}));
 cloudinary_1.v2.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
