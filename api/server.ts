@@ -14,10 +14,19 @@ dotenv.config();
 
 const app = express();
 
+// app.use(
+// 	cors({
+// 		origin: process.env.FRONTEND_URL || "https://twitter-appp.vercel.app",
+// 		credentials: true,
+// 	}),
+// );
+
 app.use(
 	cors({
 		origin: process.env.FRONTEND_URL || "https://twitter-appp.vercel.app",
+		methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
 		credentials: true,
+		allowedHeaders: "Content-Type,Authorization",
 	}),
 );
 
