@@ -97,22 +97,10 @@ export const logout = async (req: Request, res: Response) => {
 	try {
 		console.log("Logout request received");
 
-		res.cookie("jwt", "", {
-			maxAge: 0,
-			expires: new Date(0),
-			httpOnly: true,
-			sameSite: "none",
-			secure: true,
-			domain: ".onrender.com",
-			path: "/",
-		});
-
 		res.clearCookie("jwt", {
-			httpOnly: true,
 			sameSite: "none",
 			secure: true,
-			domain: ".onrender.com",
-			path: "/",
+			httpOnly: true,
 		});
 
 		res.status(200).json({ message: "Logged out successfully" });
