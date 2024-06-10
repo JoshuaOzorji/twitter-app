@@ -33,6 +33,6 @@ app.use("/api/users", user_route_1.default);
 app.use("/api/posts", post_route_1.default);
 app.use("/api/notifications", notification_route_1.default);
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    console.log(`Server is running`);
     (0, connectMongoDB_1.default)();
 });

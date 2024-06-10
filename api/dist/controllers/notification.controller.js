@@ -11,7 +11,9 @@ const getNotifications = async (req, res) => {
         const userId = req.user._id;
         const notifications = await notification_model_1.default.find({
             to: userId,
-        }).populate({ path: "from", select: "username profileImg" });
+        })
+            .sort({ createdAt: -1 })
+            .populate({ path: "from", select: "username profileImg" });
         const notificationCount = notifications.filter((notification) => !notification.read).length;
         res.status(200).json({ notifications, notificationCount });
     }

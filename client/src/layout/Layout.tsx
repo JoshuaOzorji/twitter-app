@@ -21,11 +21,11 @@ const Layout = () => {
 				{authUser && <Sidebar />}
 			</div>
 
-			<div className='flex-1 w-[90%] lg:w-[64%] '>
+			<div className='flex-1 w-[90%] lg:w-[64%] mb-10 md:mb-0'>
 				<Outlet />
 			</div>
 
-			<div className='hidden lg:inline-block lg:w-[29%]  '>
+			<div className='hidden lg:inline-block lg:w-[29%] '>
 				{authUser && <RightPanel />}
 			</div>
 
