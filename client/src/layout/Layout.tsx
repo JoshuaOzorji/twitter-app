@@ -17,14 +17,17 @@ const Layout = () => {
 
 	return (
 		<main className='w-full lg:w-[75%] flex flex-row mx-auto relative'>
+			{/* Sidebar for md and larger screens */}
 			<div className='hidden md:block md:w-[10%] lg:w-[7%] z-50'>
 				{authUser && <Sidebar />}
 			</div>
 
+			{/* Main content area */}
 			<div className='flex-1 w-[90%] lg:w-[64%] mb-10 md:mb-0'>
 				<Outlet />
 			</div>
 
+			{/* RightPanel for lg and larger screens */}
 			<div className='hidden lg:inline-block lg:w-[29%] '>
 				{authUser && <RightPanel />}
 			</div>
