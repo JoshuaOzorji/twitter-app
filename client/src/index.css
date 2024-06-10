@@ -2,8 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-.rightBorder {
-	border-right: 1px solid #000; /* Adjust thickness and color as needed */
+.icon {
+	@apply w-6 h-6 md:h-7 md:w-7;
 }
 
 .animate {

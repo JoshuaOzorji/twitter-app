@@ -95,8 +95,6 @@ export const login = async (req: Request, res: Response) => {
 
 export const logout = async (req: Request, res: Response) => {
 	try {
-		console.log("Logout request received");
-
 		res.clearCookie("jwt", {
 			sameSite: "none",
 			secure: true,

@@ -7,17 +7,15 @@ import SignUpPage from "./pages/auth/SignupPage";
 import { useQuery } from "@tanstack/react-query";
 import Layout from "./layout/Layout";
 import ProfilePage from "./pages/profile/ProfilePage";
+import Layout2 from "./layout/Layout2";
 
 const App = () => {
 	const { data: authUser } = useQuery({ queryKey: ["authUser"] });
+
 	return (
 		<main>
-			<Layout>
-				<Routes>
-					<Route
-						path='/'
-						element={authUser ? <HomePage /> : <Navigate to='/login' />}
-					/>
+			<Routes>
+				<Route element={<Layout2 />}>
 					<Route
 						path='/login'
 						element={!authUser ? <LoginPage /> : <Navigate to='/' />}
@@ -25,6 +23,12 @@ const App = () => {
 					<Route
 						path='/signup'
 						element={!authUser ? <SignUpPage /> : <Navigate to='/' />}
+					/>
+				</Route>
+				<Route element={<Layout />}>
+					<Route
+						path='/'
+						element={authUser ? <HomePage /> : <Navigate to='/login' />}
 					/>
 					<Route
 						path='/notifications'
@@ -35,8 +39,8 @@ const App = () => {
 						element={authUser ? <ProfilePage /> : <Navigate to='/login' />}
 					/>
 					<Route path='*' element={<Navigate to='/' />} />
-				</Routes>
-			</Layout>
+				</Route>
+			</Routes>
 			<Toaster
 				toastOptions={{
 					className:

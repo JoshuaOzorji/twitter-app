@@ -21,15 +21,6 @@ app.use(
 	}),
 );
 
-// app.use(
-// 	cors({
-// 		origin: process.env.FRONTEND_URL || "https://twitter-appp.vercel.app",
-// 		methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-// 		credentials: true,
-// 		allowedHeaders: "Content-Type,Authorization",
-// 	}),
-// );
-
 cloudinary.config({
 	cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
 	api_key: process.env.CLOUDINARY_API_KEY,
@@ -50,6 +41,6 @@ app.use("/api/posts", postRoutes);
 app.use("/api/notifications", notificationsRoutes);
 
 app.listen(PORT, () => {
-	console.log(`Server is running on port ${PORT}`);
+	console.log(`Server is running`);
 	connectMongoDB();
 });

@@ -10,7 +10,11 @@ import { NotificationResponse } from "../../pages/notification/NotificationPage"
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-const Sidebar = () => {
+interface SidebarProps {
+	mobile?: boolean;
+}
+
+const Sidebar = ({ mobile }: SidebarProps) => {
 	const queryClient = useQueryClient();
 
 	const { mutate: logout } = useMutation({
@@ -58,6 +62,61 @@ const Sidebar = () => {
 
 	const notifications = data?.notificationCount;
 
+	if (mobile) {
+		return (
+			<div className='flex flex-row justify-around items-center py-1 bg-black border-t rounded-t-lg border-gray-700'>
+				{/* Mobile layout */}
+				<Link
+					to='/'
+					className='flex items-center hover:bg-stone-900 transition-all duration-300 rounded-full cursor-pointer p-2 animate'>
+					<MdHomeFilled className='icon' />
+				</Link>
+
+				<Link
+					to='/notifications'
+					className='flex items-center hover:bg-stone-900 transition-all rounded-full duration-300 cursor-pointer p-2 animate relative'>
+					<RiNotification4Fill className='icon' />
+					{notifications !== undefined && notifications > 0 && (
+						<span className='absolute top-1 right-2 bg-blue-500 text-white rounded-full px-1 text-xs'>
+							{notifications}
+						</span>
+					)}
+				</Link>
+
+				<Link
+					to={`/profile/${authUser?.username}`}
+					className='flex gap-3 items-center hover:bg-stone-900 transition-all rounded-full duration-300 cursor-pointer p-2 animate'>
+					<BiSolidUser className='icon' />
+				</Link>
+
+				{authUser && (
+					<div className='dropdown dropdown-top dropdown-end'>
+						<div tabIndex={0} role='button' className=''>
+							<img
+								src={authUser?.profileImg || "/avatar-placeholder.png"}
+								className='rounded-full w-10 h-10 md:h-12 md:w-12 hover:bg-stone-900 p-2'
+							/>
+						</div>
+						<ul
+							tabIndex={0}
+							className='dropdown-content z-[1] menu p-3 bg-base-100 w-40 border rounded-lg space-y-1 font-bold shadow-stone-700 shadow-sm'>
+							<Link to={`/profile/${authUser.username}`}>Profile</Link>
+							<div className='divider'></div>
+							<li
+								className='cursor-pointer'
+								onClick={(e) => {
+									e.preventDefault();
+									logout();
+								}}>
+								Logout @{authUser.username}
+							</li>
+						</ul>
+					</div>
+				)}
+			</div>
+		);
+	}
+
 	return (
 		<div className='sticky top-0 left-0 h-screen flex flex-col border-r border-gray-700 justify-between items-center py-4'>
 			<div>
@@ -69,13 +128,13 @@ const Sidebar = () => {
 					<Link
 						to='/'
 						className='flex items-center hover:bg-stone-900 transition-all duration-300 rounded-full cursor-pointer p-2 animate'>
-						<MdHomeFilled className='w-6 h-6 md:h-7 md:w-7' />
+						<MdHomeFilled className='icon' />
 					</Link>
 
 					<Link
 						to='/notifications'
 						className='flex items-center hover:bg-stone-900 transition-all rounded-full duration-300 cursor-pointer p-2 animate relative'>
-						<RiNotification4Fill className='w-6 h-6 md:h-7 md:w-7' />
+						<RiNotification4Fill className='icon' />
 						{notifications !== undefined && notifications > 0 && (
 							<span className='absolute top-1 right-2 bg-blue-500 text-white rounded-full px-1 text-xs'>
 								{notifications}
@@ -86,7 +145,7 @@ const Sidebar = () => {
 					<Link
 						to={`/profile/${authUser?.username}`}
 						className='flex gap-3 items-center hover:bg-stone-900 transition-all rounded-full duration-300 cursor-pointer p-2 animate'>
-						<BiSolidUser className='w-6 h-6 md:h-7 md:w-7' />
+						<BiSolidUser className='icon' />
 					</Link>
 				</ul>
 			</div>

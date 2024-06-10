@@ -153,11 +153,11 @@ const Post = ({ post }: PostProps) => {
 	};
 
 	return (
-		<main className='flex gap-2 items-start p-4 border-b border-gray-700'>
+		<main className='flex gap-2 items-start p-2.5 md:p-3 lg:p-4 border-b border-gray-700'>
 			<div className='avatar'>
 				<Link
 					to={`/profile/${postOwner.username}`}
-					className='w-8 rounded-full overflow-hidden'>
+					className='w-8 h-8 rounded-full overflow-hidden'>
 					<img src={postOwner.profileImg || "/avatar-placeholder.png"} />
 				</Link>
 			</div>

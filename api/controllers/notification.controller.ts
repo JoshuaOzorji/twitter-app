@@ -8,7 +8,9 @@ export const getNotifications = async (req: Request, res: Response) => {
 
 		const notifications = await Notification.find({
 			to: userId,
-		}).populate({ path: "from", select: "username profileImg" });
+		})
+			.sort({ createdAt: -1 })
+			.populate({ path: "from", select: "username profileImg" });
 
 		const notificationCount = notifications.filter(
 			(notification) => !notification.read,
