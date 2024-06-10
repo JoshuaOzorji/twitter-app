@@ -103,6 +103,6 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ## Contact
 
-Joshua Ozorji - [LinkedIn](https://www.linkedin.com/in/joshua-ozorji) - joshuaozorji@example.com
+Joshua Ozorji - [Website](https://joshua-ozorji.vercel.app/) - ozorjijoshua@gmail.com
 
 Project Link: [https://github.com/JoshuaOzorji/twitter-app](https://github.com/JoshuaOzorji/twitter-app)
