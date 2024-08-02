@@ -7,11 +7,11 @@ import postRoutes from "./routes/post.route";
 import notificationsRoutes from "./routes/notification.route";
 import cors from "cors";
 import { v2 as cloudinary } from "cloudinary";
-
+import job from "./cron.js";
 import connectMongoDB from "./db/connectMongoDB";
 
 dotenv.config();
-
+job.start();
 const app = express();
 
 app.use(
