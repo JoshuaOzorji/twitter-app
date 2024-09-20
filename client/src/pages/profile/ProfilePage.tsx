@@ -139,7 +139,7 @@ const ProfilePage = () => {
 	}, [username, refetch]);
 
 	return (
-		<main className='min-h-screen w-full border-gray-700 border-r'>
+		<main className='w-full min-h-screen border-r border-gray-700'>
 			{/* HEADER */}
 			{(isLoading || isRefetching) && (
 				<div className='flex flex-col justify-center '>
@@ -148,19 +148,19 @@ const ProfilePage = () => {
 				</div>
 			)}
 			{!isLoading && !isRefetching && !user && (
-				<p className='text-center text-lg mt-4'>
+				<p className='mt-4 text-lg text-center'>
 					User not found
 				</p>
 			)}
 			<div className='flex flex-col'>
 				{!isLoading && !isRefetching && user && (
 					<section>
-						<div className='flex gap-10 px-4 py-2 items-center'>
+						<div className='flex items-center gap-10 px-4 py-2'>
 							<Link to='/'>
 								<FaArrowLeft className='w-4 h-4' />
 							</Link>
 							<div className='flex flex-col'>
-								<p className='font-bold text-lg'>
+								<p className='text-lg font-bold'>
 									{
 										user?.fullName
 									}
@@ -182,12 +182,12 @@ const ProfilePage = () => {
 									user?.coverImg ||
 										"/cover.png",
 								)}
-								className='h-44 w-full object-cover'
+								className='object-cover w-full h-44'
 								alt='cover image'
 							/>
 							{isMyProfile && (
 								<div
-									className='absolute top-2 right-2 rounded-full p-2 bg-gray-800 bg-opacity-75 cursor-pointer opacity-0 group-hover/cover:opacity-100 transition duration-200'
+									className='absolute p-2 transition duration-200 bg-gray-800 bg-opacity-75 rounded-full opacity-0 cursor-pointer top-2 right-2 group-hover/cover:opacity-100'
 									onClick={() =>
 										coverImgRef.current?.click()
 									}>
@@ -222,8 +222,8 @@ const ProfilePage = () => {
 								}
 							/>
 							{/* USER AVATAR */}
-							<div className='avatar absolute -bottom-14 left-4'>
-								<div className='w-28 rounded-full relative group/avatar'>
+							<div className='absolute avatar -bottom-14 left-4'>
+								<div className='relative rounded-full w-28 group/avatar'>
 									<img
 										src={getImageSrc(
 											profileImg,
@@ -234,7 +234,7 @@ const ProfilePage = () => {
 									/>
 									{isMyProfile && (
 										<div
-											className='absolute top-2 right-2 rounded-full p-2 bg-gray-800 bg-opacity-75 cursor-pointer opacity-0 group-hover/cover:opacity-100 transition duration-200'
+											className='absolute p-2 transition duration-200 bg-gray-800 bg-opacity-75 rounded-full opacity-0 cursor-pointer top-2 right-2 group-hover/cover:opacity-100'
 											onClick={() =>
 												profileImgRef.current?.click()
 											}>
@@ -254,7 +254,7 @@ const ProfilePage = () => {
 								/>
 							) : (
 								<button
-									className='btn btn-outline rounded-full btn-sm'
+									className='rounded-full btn btn-outline btn-sm'
 									onClick={() =>
 										follow(
 											user?._id,
@@ -271,14 +271,14 @@ const ProfilePage = () => {
 							{(coverImg ||
 								profileImg) && (
 								<button
-									className='btn btn-primary rounded-full btn-sm text-white px-4 ml-2'
+									className='px-4 ml-2 text-white rounded-full btn btn-primary btn-sm'
 									onClick={async () => {
-										// @ts-expect-error: Ignore TypeScript type error
+										/* eslint-disable @typescript-eslint/no-explicit-any */
 										await updateProfile(
 											{
 												coverImg,
 												profileImg,
-											},
+											} as any,
 										);
 										setProfileImg(
 											null,
@@ -294,9 +294,9 @@ const ProfilePage = () => {
 							)}
 						</div>
 
-						<div className='flex flex-col gap-4 my-3 px-4'>
+						<div className='flex flex-col gap-4 px-4 my-3'>
 							<div className='flex flex-col'>
-								<span className='font-bold text-lg'>
+								<span className='text-lg font-bold'>
 									{
 										user?.fullName
 									}
@@ -307,16 +307,16 @@ const ProfilePage = () => {
 										user?.username
 									}
 								</span>
-								<span className='text-sm my-1'>
+								<span className='my-1 text-sm'>
 									{
 										user?.bio
 									}
 								</span>
 							</div>
 
-							<div className='flex gap-2 flex-wrap'>
+							<div className='flex flex-wrap gap-2'>
 								{user?.link && (
-									<div className='flex gap-1 items-center '>
+									<div className='flex items-center gap-1 '>
 										<>
 											<FaLink className='w-3 h-3 text-slate-500' />
 											<a
@@ -330,7 +330,7 @@ const ProfilePage = () => {
 										</>
 									</div>
 								)}
-								<div className='flex gap-2 items-center'>
+								<div className='flex items-center gap-2'>
 									<IoCalendarOutline className='w-4 h-4 text-slate-500' />
 									<span className='text-sm text-slate-500'>
 										{
@@ -340,27 +340,27 @@ const ProfilePage = () => {
 								</div>
 							</div>
 							<div className='flex gap-4'>
-								<div className='flex gap-1 items-center'>
-									<span className='font-bold text-xs'>
+								<div className='flex items-center gap-1'>
+									<span className='text-xs font-bold'>
 										{
 											user
 												?.following
 												.length
 										}
 									</span>
-									<span className='text-slate-500 text-xs'>
+									<span className='text-xs text-slate-500'>
 										Following
 									</span>
 								</div>
-								<div className='flex gap-1 items-center'>
-									<span className='font-bold text-xs'>
+								<div className='flex items-center gap-1'>
+									<span className='text-xs font-bold'>
 										{
 											user
 												?.followers
 												.length
 										}
 									</span>
-									<span className='text-slate-500 text-xs'>
+									<span className='text-xs text-slate-500'>
 										Followers
 									</span>
 								</div>
@@ -369,7 +369,7 @@ const ProfilePage = () => {
 
 						<div className='flex w-full border-b border-gray-700'>
 							<div
-								className='flex justify-center flex-1 p-3 hover:bg-secondary transition duration-300 relative cursor-pointer'
+								className='relative flex justify-center flex-1 p-3 transition duration-300 cursor-pointer hover:bg-secondary'
 								onClick={() =>
 									setFeedType(
 										"posts",
@@ -382,7 +382,7 @@ const ProfilePage = () => {
 								)}
 							</div>
 							<div
-								className='flex justify-center flex-1 p-3 text-slate-500 hover:bg-secondary transition duration-300 relative cursor-pointer'
+								className='relative flex justify-center flex-1 p-3 transition duration-300 cursor-pointer text-slate-500 hover:bg-secondary'
 								onClick={() =>
 									setFeedType(
 										"likes",
@@ -391,7 +391,7 @@ const ProfilePage = () => {
 								Likes
 								{feedType ===
 									"likes" && (
-									<div className='absolute bottom-0 w-10  h-1 rounded-full bg-primary' />
+									<div className='absolute bottom-0 w-10 h-1 rounded-full bg-primary' />
 								)}
 							</div>
 						</div>
