@@ -115,6 +115,7 @@ export const updateUser = async (req: Request, res: Response) => {
 			}
 		}
 
+		// check if newPassword and currentPassword are provided
 		if (
 			(!newPassword && currentPassword) ||
 			(!currentPassword && newPassword)
@@ -124,6 +125,7 @@ export const updateUser = async (req: Request, res: Response) => {
 			});
 		}
 
+		// Check if current password is correct
 		if (currentPassword && newPassword) {
 			const isMatch = await bcrypt.compare(currentPassword, user.password);
 
@@ -161,6 +163,7 @@ export const updateUser = async (req: Request, res: Response) => {
 			coverImg = uploadedResponse.secure_url;
 		}
 
+		// Updates new value if provided
 		user.fullName = fullName ?? user.fullName;
 		user.email = email ?? user.email;
 		user.username = username ?? user.username;

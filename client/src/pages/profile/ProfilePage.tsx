@@ -50,7 +50,10 @@ const ProfilePage = () => {
 
 				const data = await response.json();
 				if (!response.ok) {
-					throw new Error(data.error || "Something went wrong");
+					throw new Error(
+						data.error ||
+							"Something went wrong",
+					);
 				}
 				return data;
 			} catch (error) {
@@ -71,12 +74,18 @@ const ProfilePage = () => {
 			try {
 				const response = await fetch(
 					`${API_BASE_URL}/api/users/profile/${username}`,
-					{ credentials: "include", method: "GET" },
+					{
+						credentials: "include",
+						method: "GET",
+					},
 				);
 
 				const data = await response.json();
 				if (!response.ok) {
-					throw new Error(data.error || "Something went wrong");
+					throw new Error(
+						data.error ||
+							"Something went wrong",
+					);
 				}
 				return data;
 			} catch (error) {
@@ -128,6 +137,7 @@ const ProfilePage = () => {
 	useEffect(() => {
 		refetch();
 	}, [username, refetch]);
+
 	return (
 		<main className='min-h-screen w-full border-gray-700 border-r'>
 			{/* HEADER */}
@@ -138,7 +148,9 @@ const ProfilePage = () => {
 				</div>
 			)}
 			{!isLoading && !isRefetching && !user && (
-				<p className='text-center text-lg mt-4'>User not found</p>
+				<p className='text-center text-lg mt-4'>
+					User not found
+				</p>
 			)}
 			<div className='flex flex-col'>
 				{!isLoading && !isRefetching && user && (
@@ -148,9 +160,16 @@ const ProfilePage = () => {
 								<FaArrowLeft className='w-4 h-4' />
 							</Link>
 							<div className='flex flex-col'>
-								<p className='font-bold text-lg'>{user?.fullName}</p>
+								<p className='font-bold text-lg'>
+									{
+										user?.fullName
+									}
+								</p>
 								<span className='text-sm text-slate-500'>
-									{userPosts?.length} posts
+									{
+										userPosts?.length
+									}{" "}
+									posts
 								</span>
 							</div>
 						</div>
@@ -158,14 +177,20 @@ const ProfilePage = () => {
 						{/* COVER IMG */}
 						<div className='relative group/cover '>
 							<img
-								src={getImageSrc(coverImg, user?.coverImg || "/cover.png")}
+								src={getImageSrc(
+									coverImg,
+									user?.coverImg ||
+										"/cover.png",
+								)}
 								className='h-44 w-full object-cover'
 								alt='cover image'
 							/>
 							{isMyProfile && (
 								<div
 									className='absolute top-2 right-2 rounded-full p-2 bg-gray-800 bg-opacity-75 cursor-pointer opacity-0 group-hover/cover:opacity-100 transition duration-200'
-									onClick={() => coverImgRef.current?.click()}>
+									onClick={() =>
+										coverImgRef.current?.click()
+									}>
 									<MdEdit className='w-5 h-5 text-white' />
 								</div>
 							)}
@@ -173,14 +198,28 @@ const ProfilePage = () => {
 							<input
 								type='file'
 								hidden
-								ref={coverImgRef}
-								onChange={(e) => handleImgChange(e, "coverImg")}
+								ref={
+									coverImgRef
+								}
+								onChange={(e) =>
+									handleImgChange(
+										e,
+										"coverImg",
+									)
+								}
 							/>
 							<input
 								type='file'
 								hidden
-								ref={profileImgRef}
-								onChange={(e) => handleImgChange(e, "profileImg")}
+								ref={
+									profileImgRef
+								}
+								onChange={(e) =>
+									handleImgChange(
+										e,
+										"profileImg",
+									)
+								}
 							/>
 							{/* USER AVATAR */}
 							<div className='avatar absolute -bottom-14 left-4'>
@@ -188,14 +227,17 @@ const ProfilePage = () => {
 									<img
 										src={getImageSrc(
 											profileImg,
-											user?.profileImg || "/avatar-placeholder.png",
+											user?.profileImg ||
+												"/avatar-placeholder.png",
 										)}
 										alt='profile image'
 									/>
 									{isMyProfile && (
 										<div
 											className='absolute top-2 right-2 rounded-full p-2 bg-gray-800 bg-opacity-75 cursor-pointer opacity-0 group-hover/cover:opacity-100 transition duration-200'
-											onClick={() => profileImgRef.current?.click()}>
+											onClick={() =>
+												profileImgRef.current?.click()
+											}>
 											<MdEdit className='w-5 h-5 text-white' />
 										</div>
 									)}
@@ -205,11 +247,19 @@ const ProfilePage = () => {
 
 						<div className='flex justify-end px-4 mt-5'>
 							{isMyProfile ? (
-								<EditProfileModal authUser={authUser} />
+								<EditProfileModal
+									authUser={
+										authUser
+									}
+								/>
 							) : (
 								<button
 									className='btn btn-outline rounded-full btn-sm'
-									onClick={() => follow(user?._id)}>
+									onClick={() =>
+										follow(
+											user?._id,
+										)
+									}>
 									{isPending
 										? "Loading..."
 										: amIFollowing
@@ -218,30 +268,50 @@ const ProfilePage = () => {
 								</button>
 							)}
 
-							{(coverImg || profileImg) && (
+							{(coverImg ||
+								profileImg) && (
 								<button
 									className='btn btn-primary rounded-full btn-sm text-white px-4 ml-2'
 									onClick={async () => {
 										// @ts-expect-error: Ignore TypeScript type error
-										await updateProfile({
-											coverImg,
-											profileImg,
-										});
-										setProfileImg(null);
-										setCoverImg(null);
+										await updateProfile(
+											{
+												coverImg,
+												profileImg,
+											},
+										);
+										setProfileImg(
+											null,
+										);
+										setCoverImg(
+											null,
+										);
 									}}>
-									{isUpdatingProfile ? "Updating..." : "Update"}
+									{isUpdatingProfile
+										? "Updating..."
+										: "Update"}
 								</button>
 							)}
 						</div>
 
 						<div className='flex flex-col gap-4 my-3 px-4'>
 							<div className='flex flex-col'>
-								<span className='font-bold text-lg'>{user?.fullName}</span>
-								<span className='text-sm text-slate-500'>
-									@{user?.username}
+								<span className='font-bold text-lg'>
+									{
+										user?.fullName
+									}
 								</span>
-								<span className='text-sm my-1'>{user?.bio}</span>
+								<span className='text-sm text-slate-500'>
+									@
+									{
+										user?.username
+									}
+								</span>
+								<span className='text-sm my-1'>
+									{
+										user?.bio
+									}
+								</span>
 							</div>
 
 							<div className='flex gap-2 flex-wrap'>
@@ -253,7 +323,9 @@ const ProfilePage = () => {
 												target='_blank'
 												rel='noreferrer'
 												className='text-sm text-blue-500 hover:underline'>
-												{user?.link}
+												{
+													user?.link
+												}
 											</a>
 										</>
 									</div>
@@ -261,22 +333,36 @@ const ProfilePage = () => {
 								<div className='flex gap-2 items-center'>
 									<IoCalendarOutline className='w-4 h-4 text-slate-500' />
 									<span className='text-sm text-slate-500'>
-										{memberSinceDate}
+										{
+											memberSinceDate
+										}
 									</span>
 								</div>
 							</div>
 							<div className='flex gap-4'>
 								<div className='flex gap-1 items-center'>
 									<span className='font-bold text-xs'>
-										{user?.following.length}
+										{
+											user
+												?.following
+												.length
+										}
 									</span>
-									<span className='text-slate-500 text-xs'>Following</span>
+									<span className='text-slate-500 text-xs'>
+										Following
+									</span>
 								</div>
 								<div className='flex gap-1 items-center'>
 									<span className='font-bold text-xs'>
-										{user?.followers.length}
+										{
+											user
+												?.followers
+												.length
+										}
 									</span>
-									<span className='text-slate-500 text-xs'>Followers</span>
+									<span className='text-slate-500 text-xs'>
+										Followers
+									</span>
 								</div>
 							</div>
 						</div>
@@ -284,17 +370,27 @@ const ProfilePage = () => {
 						<div className='flex w-full border-b border-gray-700'>
 							<div
 								className='flex justify-center flex-1 p-3 hover:bg-secondary transition duration-300 relative cursor-pointer'
-								onClick={() => setFeedType("posts")}>
+								onClick={() =>
+									setFeedType(
+										"posts",
+									)
+								}>
 								Posts
-								{feedType === "posts" && (
+								{feedType ===
+									"posts" && (
 									<div className='absolute bottom-0 w-10 h-1 rounded-full bg-primary' />
 								)}
 							</div>
 							<div
 								className='flex justify-center flex-1 p-3 text-slate-500 hover:bg-secondary transition duration-300 relative cursor-pointer'
-								onClick={() => setFeedType("likes")}>
+								onClick={() =>
+									setFeedType(
+										"likes",
+									)
+								}>
 								Likes
-								{feedType === "likes" && (
+								{feedType ===
+									"likes" && (
 									<div className='absolute bottom-0 w-10  h-1 rounded-full bg-primary' />
 								)}
 							</div>
@@ -302,7 +398,11 @@ const ProfilePage = () => {
 					</section>
 				)}
 
-				<Posts feedType={feedType} username={username} userId={user?._id} />
+				<Posts
+					feedType={feedType}
+					username={username}
+					userId={user?._id}
+				/>
 			</div>
 		</main>
 	);
